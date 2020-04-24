@@ -1,0 +1,33 @@
+---
+- name: Ensure config directory exists
+  file:
+    path: "{{ teku_config_dir }}"
+    state: directory
+    owner: "{{ teku_user }}"
+    group: "{{ teku_group }}"
+    recurse: yes
+  become: true
+
+- name: Generate config file
+  template:
+    src: "{{ teku_config_template }}"
+    dest: "{{ teku_config_dir }}/teku.yml"
+    owner: "{{ teku_user }}"
+    group: "{{ teku_group }}"
+  become: true
+  register: config_toml
+
+- name: Set updated optionally to trigger a systemd restart at the end
+  set_fact:
+    teku_state_updates: "{{ teku_state_updates + ['teku.config_toml'] }}"
+  when: config_toml is changed
+
+# TODO: add this in when Teku supports the data dir option - see the pre_install file for now
+#- name: Create data directory
+#  file:
+#    path: "{{ teku_data_dir }}"
+#    state: directory
+#    owner: "{{ teku_user }}"
+#    group: "{{ teku_group }}"
+#    recurse: yes
+#  become: true

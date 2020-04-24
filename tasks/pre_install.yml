@@ -1,0 +1,39 @@
+---
+# This file is there to setup links etc while artemis is still in development and doesnt do things like data directorties,
+# log directories etc
+# It is always intended that this file be deleted, please ignore any repetition here
+
+- name: Ensure Teku group exists
+  group:
+    name: "{{ teku_group }}"
+    state: present
+  become: true
+
+- name: Create Teku user
+  user:
+    comment:  Teku client user
+    name: "{{ teku_user }}"
+    group: "{{ teku_group }}"
+  become: true
+
+- name: Create data directory
+  file:
+    path: "{{ teku_data_dir }}"
+    state: directory
+    owner: "{{ teku_user }}"
+    group: "{{ teku_group }}"
+    recurse: yes
+  become: true
+
+# Teku doesnt quite support a seperate data directory at present, and the default volume only holds 8G
+# so we symlink the volume /data/teku dir to /opt/teku
+- name: Create a symlink to /opt/teku
+  file:
+    src: "{{ teku_data_dir }}"
+    dest: "{{ teku_base_dir }}"
+    state: link
+  become: true
+
+
+
+

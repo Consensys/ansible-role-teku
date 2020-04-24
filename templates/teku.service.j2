@@ -1,0 +1,17 @@
+[Unit]
+Description=Teku
+After=syslog.target network.target
+
+[Service]
+User={{ teku_user }}
+Group={{ teku_group }}
+Environment=HOME=/home/{{ teku_user }}
+Type=simple
+ExecStart=/bin/sh -c "{{ teku_install_dir }}/bin/teku -c {{ teku_config_dir }}/teku.yml >> {{ teku_log_dir }}/teku.log 2>&1"
+SuccessExitStatus=143
+Restart=on-failure
+RestartSec=10s
+WorkingDirectory={{ teku_install_dir }}
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,80 @@
+---
+- name: Ensure Teku group exists
+  group:
+    name: "{{ teku_group }}"
+    state: present
+  become: true
+
+- name: Create Teku user
+  user:
+    comment:  Teku client user
+    name: "{{ teku_user }}"
+    group: "{{ teku_group }}"
+  become: true
+
+- name: Create base directory
+  file:
+    path: "{{ teku_base_dir }}"
+    state: directory
+    owner: "{{ teku_user }}"
+    group: "{{ teku_group }}"
+  become: true
+
+- name: Create install directory
+  file:
+    path: "{{ teku_install_dir }}"
+    state: directory
+    owner: "{{ teku_user }}"
+    group: "{{ teku_group }}"
+  become: true
+
+- name: Create log directory
+  file:
+    path: "{{ teku_log_dir }}"
+    state: directory
+    owner: "{{ teku_user }}"
+    group: "{{ teku_group }}"
+  become: true
+
+- name: Setup logrotate
+  template:
+    src: "logrotate/teku"
+    dest: "/etc/logrotate.d/teku"
+  become: true
+
+- name: Extract Teku source to install directory
+  unarchive:
+    src: "{{ teku_download_url }}"
+    remote_src: true
+    dest: "{{ teku_install_dir }}"
+    owner: "{{ teku_user }}"
+    group: "{{ teku_group }}"
+    mode: '0775'
+    extra_opts:
+      - --strip-components
+      - '1'
+  become: true
+  register: extract_src
+
+- name: Set updated optionally to trigger a systemd restart at the end
+  set_fact:
+    teku_state_updates: "{{ teku_state_updates + ['teku.install_dir'] }}"
+  when: extract_src is changed
+
+# will throw error the first time you install since the service isnt present
+- name: Stop Teku systemd service if running
+  service:
+    name: teku
+    state: stopped
+  when: ( extract_src is changed ) and
+    ( teku_managed_service ) and
+    ( ansible_os_family != "Darwin" )
+  become: true
+  ignore_errors: true
+
+- name: Create a symlink to current
+  file:
+    src: "{{ teku_install_dir }}/"
+    dest: "{{ teku_current_dir }}"
+    state: link
+  become: true

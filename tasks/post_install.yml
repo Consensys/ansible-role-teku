@@ -1,0 +1,17 @@
+---
+# This file is there to setup links etc while artemis is still in development and doesnt do things like data directorties,
+# log directories etc
+# It is always intended that this file be deleted, please ignore any repetition here
+
+# Teku doesnt quite support logging to a file path or stdout - it always logs to ./artemis.log
+- name: Create a symlink to /var/log/teku/teku.log
+  file:
+    src: "{{ teku_current_dir }}/artemis.log"
+    dest: "{{ teku_log_dir }}/teku.log"
+    state: link
+    force: yes
+  become: true
+
+
+
+
