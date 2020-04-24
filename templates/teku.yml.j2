@@ -11,7 +11,7 @@ p2p-interface: "{{teku_p2p_interface}}"
 p2p-port: {{teku_p2p_port}}
 p2p-advertised-port: {{teku_p2p_advertised_port}}
 p2p-discovery-enabled: {{teku_p2p_discovery_enabled}}
-{% if teku_node_private_key_file !:  "" %}
+{% if teku_node_private_key_file != "" %}
 # private_key
 p2p-private-key-file: "{{teku_node_private_key_file}}"
 {% endif %}
@@ -26,7 +26,7 @@ Xinterop-number-of-validators: {{teku_interop_number_of_validators}}
 Xinterop-enabled: {{teku_interop_enabled}}
 
 # validator
-{% if teku_validators_key_file !:  "" %}
+{% if teku_validators_key_file != "" %}
 validators-key-file: "{{teku_validators_key_file}}"
 {% endif %}
 
@@ -38,7 +38,7 @@ eth1-endpoint: "{{teku_deposit_eth1_endpoint}}"
 #Xtransaction-record-directory: "/tmp/teku"
 
 # logging
-log-colour-enabled: False
+#log-colour-enabled: False
 log-include-events-enabled: False
 log-destination: 'both'
 log-file: 'teku.log'
@@ -47,7 +47,7 @@ log-file-name-pattern: 'tekuL_%d{yyyy-MM-dd}.log'
 
 
 # metrics
-{% if teku_metrics_enabled|bool : :  True %}
+{% if teku_metrics_enabled|bool == True %}
 metrics-enabled: True
 metrics-port: {{teku_metrics_port}}
 metrics-interface : "{{teku_metrics_interface}}"
