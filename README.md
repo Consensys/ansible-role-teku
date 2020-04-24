@@ -38,13 +38,45 @@ All variables which can be overridden are stored in [defaults/main.yml](defaults
 | `teku_config_dir` | /etc/teku | Path for default configuration |
 | `teku_data_dir` | /opt/teku/data | Path for data directory|
 | `teku_log_dir` | /var/log/teku | Path for logs |
-| `teku_log4j_config_file` | "" | Absolute path for a custom log4j config file |
 | `teku_profile_file` | /etc/profile.d/teku-path.sh | Path to allow loading teku into the system PATH |
 | `teku_managed_service` | true | Enables a systemd service (or launchd if on Darwin) |
 | `teku_launchd_dir` | /Library/LaunchAgents | The default launchd directory  |
 | `teku_systemd_dir` | /etc/systemd/system/ | The default systemd directory |
 | `teku_systemd_state` | restarted | The default option for the systemd service state |
-
+| `teku_output_transition_dir` | /tmp/teku | |
+| `teku_node_private_key_file` | "" | |
+| `teku_network` | minimal | Predefined network configuration |
+| `teku_default_ip` | "127.0.0.1" | |
+| `teku_host_ip` | "" | |
+| `teku_p2p_enabled` | False | Enables or disables all P2P communication |
+| `teku_p2p_interface` | 0.0.0.0 | Specifies the network interface on which the node listens for P2P communication |
+| `teku_p2p_port` | 9000 | Specifies the P2P listening ports (UDP and TCP) |
+| `teku_p2p_advertised_port` | 9000 | The advertised P2P port |
+| `teku_p2p_discovery_enabled` | False | Enables or disables P2P peer discovery |
+| `teku_interop_genesis_time` | 0 | |
+| `teku_interop_start_state` | "" | |
+| `teku_interop_owned_validator_start_index` | 0 | |
+| `teku_interop_owned_validator_count` | 64 | |
+| `teku_interop_number_of_validators` | 64 | |
+| `teku_interop_enabled` | True | |
+| `teku_validators_key_file` | "" | Path to the YAML formatted file to load unencrypted validator keys from |
+| `teku_deposit_mode` | normal | |
+| `teku_deposit_input_file` | "" | |
+| `teku_deposit_number_validators` | 64 | |
+| `teku_deposit_contract_address` | 0x | Eth1 address of deposit contract |
+| `teku_deposit_eth1_endpoint` | "http://0.0.0.0:8545" | JSON-RPC URL of Eth1 node |
+| `teku_metrics_enabled` | False | Set to true to enable the metrics exporter |
+| `teku_metrics_interface` | 0.0.0.0 | |
+| `teku_metrics_port` | 8008 | |
+| `teku_metrics_categories` | ["BEACON", "LIBP2P", "NETWORK", "EVENTBUS", "JVM", "PROCESS"] | Categories for which to track metrics |
+| `teku_data_path` | /data | |
+| `teku_data_storage_mode` | prune | Set the strategy for handling historical chain data |
+| `teku_beacon_rest_api_port` | 5051 | |
+| `teku_beacon_rest_api_docs_enabled` | False | |
+| `teku_beacon_rest_api_enabled` | True | Enable the REST API service |
+| `teku_beacon_rest_api_interface` | 127.0.0.1 | Interface for the REST API service |
+| `teku_cmdline_args` | "" | |
+| `teku_env_opts` | "" | |
 
 ### Example Playbook
 
