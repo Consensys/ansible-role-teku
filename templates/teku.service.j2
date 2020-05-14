@@ -6,6 +6,10 @@ After=syslog.target network.target
 User={{ teku_user }}
 Group={{ teku_group }}
 Environment=HOME=/home/{{ teku_user }}
+Environment='TEKU_OPTS={{ teku_env_opts }}'
+{% if teku_log4j_config_file %}
+Environment=LOG4J_CONFIGURATION_FILE={{ teku_log4j_config_file }}
+{% endif %}
 Type=simple
 ExecStart=/bin/sh -c "{{ teku_install_dir }}/bin/teku -c {{ teku_config_dir }}/teku.yml >> {{ teku_log_dir }}/teku.log 2>&1"
 SuccessExitStatus=143

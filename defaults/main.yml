@@ -13,6 +13,7 @@ teku_current_dir: "{{ teku_base_dir }}/current"
 teku_data_dir: "{{ teku_base_dir }}/data"
 teku_config_dir: "/etc/teku"
 teku_log_dir: "/var/log/teku"
+teku_log4j_config_file: ""
 teku_output_transition_dir: "/tmp/teku"
 teku_node_private_key_file: ""
 teku_config_template: "teku.yml.j2"
@@ -28,18 +29,19 @@ teku_launchd_dir: /Library/LaunchAgents
 
 # Teku config
 teku_network: minimal
+teku_initial_state: ""
 teku_host_ip: ""
 teku_default_ip: "127.0.0.1"
+
 #node
-teku_p2p_enabled: "False"
+teku_p2p_enabled: "True"
 teku_p2p_interface: 0.0.0.0
 teku_p2p_port: 9000
 teku_p2p_advertised_port: 9000
-teku_p2p_discovery_enabled: "False"
+teku_p2p_discovery_enabled: "True"
 
 #interop
 teku_interop_genesis_time: 0
-teku_interop_start_state: ""
 teku_interop_owned_validator_start_index: 0
 teku_interop_owned_validator_count: 64
 teku_interop_number_of_validators: 64
@@ -53,10 +55,11 @@ teku_deposit_number_validators: 64
 teku_deposit_contract_address: "0x"
 teku_deposit_eth1_endpoint: "http://0.0.0.0:8545"
 
-teku_metrics_enabled: "False"
+teku_metrics_enabled: "True"
 teku_metrics_interface: 0.0.0.0
+teku_metrics_host_whitelist: ["*"]
 teku_metrics_port: 8008
-teku_metrics_categories: ["BEACON", "LIBP2P", "NETWORK", "EVENTBUS", "JVM", "PROCESS"]
+teku_metrics_categories: []
 
 teku_data_path: "."
 teku_data_storage_mode: "prune"
@@ -68,6 +71,9 @@ teku_beacon_rest_api_interface: "127.0.0.1"
 
 teku_cmdline_args: ""
 teku_env_opts: ""
+
+teku_validator_key_files: []
+teku_validator_key_password_files: []
 
 # internal state to maintain idempotency
 teku_state_updates: []
