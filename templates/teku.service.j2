@@ -6,7 +6,7 @@ After=syslog.target network.target
 User={{ teku_user }}
 Group={{ teku_group }}
 Environment=HOME=/home/{{ teku_user }}
-Environment='TEKU_OPTS={{ teku_env_opts }}'
+Environment='TEKU_OPTS={{ teku_env_opts|teku_opts_format }}'
 {% if teku_log4j_config_file %}
 Environment=LOG4J_CONFIGURATION_FILE={{ teku_log4j_config_file }}
 {% endif %}
