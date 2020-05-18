@@ -34,8 +34,5 @@
 - name: Create config
   include_tasks: "config.yml"
 
-- name: Post install steps
-  include_tasks: "post_install.yml"
-
 - name: Create teku service
   include_tasks: "service.yml"

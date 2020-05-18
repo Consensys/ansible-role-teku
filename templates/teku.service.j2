@@ -11,11 +11,11 @@ Environment='TEKU_OPTS={{ teku_env_opts }}'
 Environment=LOG4J_CONFIGURATION_FILE={{ teku_log4j_config_file }}
 {% endif %}
 Type=simple
-ExecStart=/bin/sh -c "{{ teku_install_dir }}/bin/teku -c {{ teku_config_dir }}/teku.yml >> {{ teku_log_dir }}/teku.log 2>&1"
+ExecStart=/bin/sh -c "{{ teku_current_dir }}/bin/teku -c {{ teku_config_dir }}/teku.yml >> {{ teku_log_dir }}/teku.log 2>&1"
 SuccessExitStatus=143
 Restart=on-failure
 RestartSec=10s
-WorkingDirectory={{ teku_install_dir }}
+WorkingDirectory={{ teku_current_dir }}
 
 [Install]
 WantedBy=multi-user.target
