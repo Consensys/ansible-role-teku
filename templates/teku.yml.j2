@@ -42,13 +42,13 @@ eth1-endpoint: "{{teku_deposit_eth1_endpoint}}"
 #Xtransaction-record-directory: "/tmp/teku"
 
 # logging
-{% if teku_log4j_config_file != "" %}
-#log-colour-enabled: False
+log-colour-enabled: False
+{% if teku_log4j_config_file == "" %}
 log-include-events-enabled: False
 log-destination: 'both'
 log-file: 'teku.log'
 log-file-name-pattern: 'tekuL_%d{yyyy-MM-dd}.log'
-logPath: "{{teku_log_dir}}"
+log-path: "{{teku_log_dir}}"
 {% endif %}
 
 
@@ -61,6 +61,7 @@ metrics-interface : "{{teku_metrics_interface}}"
 metrics-categories: [{{teku_metrics_categories|map('to_json')|join(',')}}]
 {% endif %}
 metrics-host-whitelist: [{{teku_metrics_host_whitelist|map('to_json')|join(',')}}]
+{% endif %}
 
 # database
 data-path: "{{teku_data_path}}"
