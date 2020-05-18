@@ -13,9 +13,6 @@
         - "{{ ansible_os_family|lower }}.yml"
       skip: true
 
-- name: Pre install steps
-  include_tasks: "pre_install.yml"
-
 - name: Install teku
   include_tasks: "install.yml"
 
