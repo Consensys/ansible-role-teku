@@ -15,4 +15,6 @@ class FilterModule(object):
 
         escaped_teku_env_opts = [item.replace('"', '\\"') for item in teku_env_opts]
 
+        # Quote each option individually
+        # ["one", "two", "three"] -> "one" "two" "three"
         return f'''"{'" "'.join(escaped_teku_env_opts)}"'''
