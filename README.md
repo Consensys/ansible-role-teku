@@ -48,24 +48,24 @@ All variables which can be overridden are stored in [defaults/main.yml](defaults
 | `teku_network` | minimal | Predefined network configuration |
 | `teku_default_ip` | "127.0.0.1" | |
 | `teku_host_ip` | "" | |
-| `teku_p2p_enabled` | False | Enables or disables all P2P communication |
+| `teku_p2p_enabled` | True | Enables or disables all P2P communication |
 | `teku_p2p_interface` | 0.0.0.0 | Specifies the network interface on which the node listens for P2P communication |
 | `teku_p2p_port` | 9000 | Specifies the P2P listening ports (UDP and TCP) |
 | `teku_p2p_advertised_port` | 9000 | The advertised P2P port |
-| `teku_p2p_discovery_enabled` | False | Enables or disables P2P peer discovery |
+| `teku_p2p_discovery_enabled` | True | Enables or disables P2P peer discovery |
 | `teku_interop_genesis_time` | 0 | |
 | `teku_interop_start_state` | "" | |
 | `teku_interop_owned_validator_start_index` | 0 | |
 | `teku_interop_owned_validator_count` | 64 | |
 | `teku_interop_number_of_validators` | 64 | |
-| `teku_interop_enabled` | True | |
+| `teku_interop_enabled` | False | |
 | `teku_validators_key_file` | "" | Path to the YAML formatted file to load unencrypted validator keys from |
 | `teku_deposit_mode` | normal | |
 | `teku_deposit_input_file` | "" | |
 | `teku_deposit_number_validators` | 64 | |
 | `teku_deposit_contract_address` | 0x | Eth1 address of deposit contract |
 | `teku_deposit_eth1_endpoint` | "http://0.0.0.0:8545" | JSON-RPC URL of Eth1 node |
-| `teku_metrics_enabled` | False | Set to true to enable the metrics exporter |
+| `teku_metrics_enabled` | True | Set to true to enable the metrics exporter |
 | `teku_metrics_interface` | 0.0.0.0 | |
 | `teku_metrics_port` | 8008 | |
 | `teku_metrics_categories` | ["BEACON", "LIBP2P", "NETWORK", "EVENTBUS", "JVM", "PROCESS"] | Categories for which to track metrics |
