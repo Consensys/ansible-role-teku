@@ -60,7 +60,7 @@ metrics-interface : "{{teku_metrics_interface}}"
 {% if teku_metrics_categories != [] %}
 metrics-categories: [{{teku_metrics_categories|map('to_json')|join(',')}}]
 {% endif %}
-metrics-host-whitelist: [{{teku_metrics_host_whitelist|map('to_json')|join(',')}}]
+metrics-host-allowlist: [{{teku_metrics_host_allowlist|map('to_json')|join(',')}}]
 {% endif %}
 
 # database

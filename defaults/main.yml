@@ -57,11 +57,11 @@ teku_deposit_eth1_endpoint: "http://0.0.0.0:8545"
 
 teku_metrics_enabled: "True"
 teku_metrics_interface: 0.0.0.0
-teku_metrics_host_whitelist: ["*"]
+teku_metrics_host_allowlist: ["*"]
 teku_metrics_port: 8008
-teku_metrics_categories: []
+teku_metrics_categories: ["BEACON","LIBP2P","NETWORK","EVENTBUS","JVM","PROCESS","STORAGE","VALIDATOR"]
 
-teku_data_path: "."
+teku_data_path: "/data"
 teku_data_storage_mode: "prune"
 
 teku_beacon_rest_api_port: 5051
