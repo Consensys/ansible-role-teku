@@ -72,7 +72,7 @@ rest-api-port: {{teku_beacon_rest_api_port}}
 rest-api-docs-enabled: {{teku_beacon_rest_api_docs_enabled}}
 rest-api-enabled: {{teku_beacon_rest_api_enabled}}
 rest-api-interface: "{{teku_beacon_rest_api_interface}}"
-
+rest-api-host-allowlist: [{{teku_beacon_rest_api_host_allowlist|map('to_json')|join(',')}}]
 
 {% if teku_validator_key_files != [] %}
 # validators keys

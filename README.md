@@ -75,8 +75,9 @@ All variables which can be overridden are stored in [defaults/main.yml](defaults
 | `teku_beacon_rest_api_docs_enabled` | False | |
 | `teku_beacon_rest_api_enabled` | True | Enable the REST API service |
 | `teku_beacon_rest_api_interface` | 127.0.0.1 | Interface for the REST API service |
-| `teku_cmdline_args` | "" | |
-| `teku_env_opts` | "" | |
+| `teku_beacon_rest_api_host_allowlist` | ["*"] | Host allowlist for for the REST API service |
+| `teku_cmdline_args` | [] | |
+| `teku_env_opts` | [] | |
 
 ### Example Playbook
 
