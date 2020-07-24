@@ -13,7 +13,7 @@ p2p-enabled: {{teku_p2p_enabled}}
 p2p-interface: "{{teku_p2p_interface}}"
 p2p-port: {{teku_p2p_port}}
 {% if teku_host_ip != "" %}
-p2p-advertised-ip: {{ teku_host_ip }}
+p2p-advertised-ip: "{{ teku_host_ip }}"
 {% endif %}
 p2p-advertised-port: {{teku_p2p_advertised_port}}
 p2p-discovery-enabled: {{teku_p2p_discovery_enabled}}
