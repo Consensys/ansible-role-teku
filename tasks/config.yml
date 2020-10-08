@@ -8,19 +8,55 @@
     recurse: yes
   become: true
 
-- name: Generate config file
+- name: Generate config file - monolith
   template:
     src: "{{ teku_config_template }}"
-    dest: "{{ teku_config_dir }}/teku.yml"
+    dest: "{{ teku_monolith_config_file }}"
     owner: "{{ teku_user }}"
     group: "{{ teku_group }}"
   become: true
   register: config_toml
+  when: "not teku_standalone_validator"
 
 - name: Set updated optionally to trigger a systemd restart at the end
   set_fact:
     teku_state_updates: "{{ teku_state_updates + ['teku.config_toml'] }}"
   when: config_toml is changed
+
+- name: Generate config file - standalone
+  block:
+    - name: Configuration file - beacon
+      template:
+        src: "{{ teku_config_template }}"
+        dest: "{{ teku_beacon_config_file }}"
+        owner: "{{ teku_user }}"
+        group: "{{ teku_group }}"
+      become: true
+      register: config_toml_beacon
+      vars:
+        teku_metrics_port: "{{ teku_beacon_metrics_port }}"
+
+    - name: Set updated optionally to trigger a systemd restart at the end - beacon
+      set_fact:
+        teku_state_updates_beacon: "{{ teku_state_updates_beacon + ['teku.config_toml'] }}"
+      when: config_toml_beacon is changed
+
+    - name: Configuration file - validator
+      template:
+        src: "{{ teku_config_template }}"
+        dest: "{{ teku_validator_config_file }}"
+        owner: "{{ teku_user }}"
+        group: "{{ teku_group }}"
+      become: true
+      register: config_toml_validator
+      vars:
+        teku_metrics_port: "{{ teku_validator_metrics_port }}"
+
+    - name: Set updated optionally to trigger a systemd restart at the end - validator
+      set_fact:
+        teku_state_updates_validator: "{{ teku_state_updates_validator + ['teku.config_toml'] }}"
+      when: config_toml_validator is changed
+  when: "teku_standalone_validator"
 
 # TODO: add this in when Teku supports the data dir option - see the pre_install file for now
 #- name: Create data directory

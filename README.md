@@ -67,9 +67,11 @@ All variables which can be overridden are stored in [defaults/main.yml](defaults
 | `teku_deposit_eth1_endpoint` | "http://0.0.0.0:8545" | JSON-RPC URL of Eth1 node |
 | `teku_metrics_enabled` | True | Set to true to enable the metrics exporter |
 | `teku_metrics_interface` | 0.0.0.0 | |
-| `teku_metrics_port` | 8008 | |
+| `teku_metrics_port` | 8008 | Metric port when deployed as monolith |
+| `teku_beacon_metrics_port` | 8008 | Beacon service metric port when deployed as standalone |
+| `teku_validator_metrics_port` | 8009 | Validator service metric port when deployed as standalone |
 | `teku_metrics_categories` | ["BEACON", "LIBP2P", "NETWORK", "EVENTBUS", "JVM", "PROCESS"] | Categories for which to track metrics |
-| `teku_data_path` | /data | |
+| `teku_data_path` | /data | Use same folder for both validator and beaon service in standalone mode |
 | `teku_data_storage_mode` | prune | Set the strategy for handling historical chain data |
 | `teku_beacon_rest_api_port` | 5051 | |
 | `teku_beacon_rest_api_docs_enabled` | False | |
@@ -78,6 +80,14 @@ All variables which can be overridden are stored in [defaults/main.yml](defaults
 | `teku_beacon_rest_api_host_allowlist` | ["*"] | Host allowlist for for the REST API service |
 | `teku_cmdline_args` | [] | |
 | `teku_env_opts` | [] | |
+| `teku_standalone_validator` | False | Run validator in standalone mode |
+
+### Standalone Mode
+
+It is possible to configure Teku to run in either monolith mode (both beacon and validator run in same process) or standalone mode(beacon and validator run in its own process).
+Standalone mode runs beacon service its own process and validator service in its own process. Systemd service name `teku` is used for beacon service
+and `teku-validator` is used for validator service when run in standalone mode. Ansible role defaults to run Teku in monolith mode and behaviour can be controlled with the
+variable `teku_standalone_validator=False/True`.
 
 ### Example Playbook
 
