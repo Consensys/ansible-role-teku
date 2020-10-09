@@ -12,9 +12,9 @@ Environment=LOG4J_CONFIGURATION_FILE={{ teku_log4j_config_file }}
 {% endif %}
 Type=simple
 {% if teku_cmdline_args %}
-ExecStart=/bin/sh -c "{{ teku_current_dir }}/bin/teku -c {{ teku_config_dir }}/teku.yml {{teku_cmdline_args|map('to_json')|join(' ')|regex_replace('"','')}} >> {{ teku_log_dir }}/teku.log 2>&1"
+ExecStart=/bin/sh -c "{{ teku_current_dir }}/bin/teku -c {{ teku_config_file }} {{ teku_sub_command }} {{teku_cmdline_args|map('to_json')|join(' ')|regex_replace('"','')}} >> {{ teku_log_file }} 2>&1"
 {% else %}
-ExecStart=/bin/sh -c "{{ teku_current_dir }}/bin/teku -c {{ teku_config_dir }}/teku.yml >> {{ teku_log_dir }}/teku.log 2>&1"
+ExecStart=/bin/sh -c "{{ teku_current_dir }}/bin/teku -c {{ teku_config_file }} {{ teku_sub_command }} >> {{ teku_log_file }} 2>&1"
 {% endif %}
 SuccessExitStatus=143
 Restart=on-failure

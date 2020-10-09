@@ -78,3 +78,33 @@ teku_validator_key_password_files: []
 
 # internal state to maintain idempotency
 teku_state_updates: []
+teku_state_updates_validator: []
+teku_state_updates_beacon: []
+
+# Defaults for monolith service for backward compatibility
+teku_sub_command: ''
+teku_log_file: "{{ teku_log_dir }}/teku.log"
+teku_config_file: "{{ teku_config_dir }}/teku.yml"
+
+# determine whether to run as standalone validator client. Default is not to run standalone validator
+teku_standalone_validator: False
+
+# Configuration for monolith teku client
+teku_monolith_service_name: 'teku'
+teku_monolith_service_file: "{{ teku_systemd_dir }}/teku.service"
+teku_monolith_log_file: "{{ teku_log_dir }}/teku.log"
+teku_monolith_config_file: "{{ teku_config_dir }}/teku.yml"
+
+# Configuration for standalone validator client
+teku_validator_service_name: 'teku-validator'
+teku_validator_service_file: "{{ teku_systemd_dir }}/teku-validator.service"
+teku_validator_log_file: "{{ teku_log_dir }}/teku-validator.log"
+teku_validator_config_file: "{{ teku_config_dir }}/teku-validator.yml"
+teku_validator_metrics_port: '8009'
+
+# Configuration for standalone beacon client
+teku_beacon_service_name: 'teku'
+teku_beacon_service_file: "{{ teku_systemd_dir }}/teku.service"
+teku_beacon_log_file: "{{ teku_log_dir }}/teku.log"
+teku_beacon_config_file: "{{ teku_config_dir }}/teku.yml"
+teku_beacon_metrics_port: '8008'
