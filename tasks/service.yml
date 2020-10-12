@@ -79,12 +79,19 @@
 - name: Configure standalone validator
   block:
 
+    - name: Check teku systemd file exist
+      stat:
+        path: "{{ teku_monolith_service_file }}"
+      register: teku_monolith_file_stat
+
     - name: Stop monolith service
       systemd:
         name: "{{ teku_monolith_service_name }}"
         state: stopped
       become: true
-      when: "not teku_standalone_validator_file_stat.stat.exists"
+      when:
+        - "not teku_standalone_validator_file_stat.stat.exists"
+        - "teku_monolith_file_stat.stat.exists"
 
     - name: Create Teku beacon systemd service
       template:
