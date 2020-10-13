@@ -104,9 +104,6 @@
         - teku_managed_service
       register: systemd_file_beacon
       vars:
-        teku_cmdline_args:
-          - '--Xremote-validator-api-enabled'
-        teku_validator_key_files: []
         teku_log_file: "{{ teku_beacon_log_file }}"
         teku_config_file: "{{ teku_beacon_config_file }}"
 
