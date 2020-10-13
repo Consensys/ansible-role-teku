@@ -8,14 +8,22 @@
     recurse: yes
   become: true
 
-- name: Generate config file - monolith
-  template:
-    src: "{{ teku_config_template }}"
-    dest: "{{ teku_monolith_config_file }}"
-    owner: "{{ teku_user }}"
-    group: "{{ teku_group }}"
-  become: true
-  register: config_toml
+- name: Configuration file - monolith
+  block:
+  - name: Remove stanalone validator config file
+    file:
+      path: "{{ teku_validator_config_file }}"
+      state: absent
+    become: true
+
+  - name: Generate config file - monolith
+    template:
+      src: "{{ teku_config_template }}"
+      dest: "{{ teku_monolith_config_file }}"
+      owner: "{{ teku_user }}"
+      group: "{{ teku_group }}"
+    become: true
+    register: config_toml
   when: "not teku_standalone_validator"
 
 - name: Set updated optionally to trigger a systemd restart at the end
@@ -25,6 +33,7 @@
 
 - name: Generate config file - standalone
   block:
+    # Set empty list for key and password files to remove the configuration for beacon in standalone mode
     - name: Configuration file - beacon
       template:
         src: "{{ teku_config_template }}"
@@ -35,6 +44,8 @@
       register: config_toml_beacon
       vars:
         teku_metrics_port: "{{ teku_beacon_metrics_port }}"
+        teku_validator_key_files: []
+        teku_validator_key_password_files: []
 
     - name: Set updated optionally to trigger a systemd restart at the end - beacon
       set_fact:
