@@ -63,8 +63,16 @@
     - name: Enable and start Teku service
       systemd:
         name: "{{ teku_monolith_service_name }}"
-        state: "{{ teku_systemd_state }}"
+        state: 'started'
         enabled: true
+      become: true
+      when:
+        - teku_managed_service
+
+    - name: Restart Teku service
+      systemd:
+        name: "{{ teku_monolith_service_name }}"
+        state: "{{ teku_systemd_state }}"
       become: true
       when:
         - teku_state_updates|length > 0
@@ -141,8 +149,16 @@
     - name: Enable and start Teku service - beacon
       systemd:
         name: "{{ teku_beacon_service_name }}"
-        state: "{{ teku_systemd_state }}"
+        state: 'started'
         enabled: true
+      become: true
+      when:
+        - teku_managed_service
+
+    - name: Restart Teku service - beacon
+      systemd:
+        name: "{{ teku_beacon_service_name }}"
+        state: "{{ teku_systemd_state }}"
       become: true
       when:
         - teku_state_updates_beacon|length > 0
@@ -151,8 +167,16 @@
     - name: Enable and start Teku service - validator
       systemd:
         name: "{{ teku_validator_service_name }}"
-        state: "{{ teku_systemd_state }}"
+        state: 'started'
         enabled: true
+      become: true
+      when:
+        - teku_managed_service
+
+    - name: Restart Teku service - validator
+      systemd:
+        name: "{{ teku_validator_service_name }}"
+        state: "{{ teku_systemd_state }}"
       become: true
       when:
         - teku_state_updates_validator|length > 0
