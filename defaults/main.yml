@@ -11,6 +11,7 @@ teku_base_dir: "/opt/teku"
 teku_install_dir: "{{ teku_base_dir }}/teku-{{ teku_version }}"
 teku_current_dir: "{{ teku_base_dir }}/current"
 teku_data_dir: "{{ teku_base_dir }}/data"
+teku_data_beacon_dir: "{{ teku_data_dir }}/dir"
 teku_config_dir: "/etc/teku"
 teku_log_dir: "/var/log/teku"
 teku_log4j_config_file: ""
@@ -18,6 +19,14 @@ teku_output_transition_dir: "/tmp/teku"
 teku_node_private_key_file: ""
 teku_config_template: "teku.yml.j2"
 besu_profile_file: "/etc/profile.d/teku-path.sh"
+
+# Logging
+teku_log_level: INFO
+teku_log_color_enabled: False
+teku_log_destination: 'DEFAULT_BOTH'
+teku_log_filename: 'teku.log'
+teku_log_filename_pattern: 'teku_%d{yyyy-MM-dd}.log'
+teku_log_include_events_enabled: False
 
 # Managed service config
 teku_managed_service: true
