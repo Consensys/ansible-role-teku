@@ -21,6 +21,21 @@ p2p-discovery-enabled: {{teku_p2p_discovery_enabled}}
 # private_key
 p2p-private-key-file: "{{teku_node_private_key_file}}"
 {% endif %}
+{% if teku_p2p_discovery_bootnodes is defined and teku_p2p_discovery_bootnodes != '' %}
+p2p-discovery-bootnodes: {{ teku_p2p_discovery_bootnodes }}
+{% endif %}
+{% if teku_p2p_peer_lower_bound is defined and teku_p2p_peer_lower_bound != '' %}
+p2p-peer-lower-bound: {{ teku_p2p_peer_lower_bound }}
+{% endif %}
+{% if teku_p2p_peer_upper_bound is defined and teku_p2p_peer_upper_bound != '' %}
+p2p-peer-upper-bound: {{ teku_p2p_peer_upper_bound }}
+{% endif %}
+{% if teku_p2p_static_peers is defined and teku_p2p_static_peers != ''  %}
+p2p-static-peers: {{ teku_p2p_static_peers }}
+{% endif %}
+{% if teku_p2p_subscribe_all_subnets_enabled is defined and teku_p2p_subscribe_all_subnets_enabled != '' %}
+p2p-subscribe-all-subnets-enabled: {{ teku_p2p_subscribe_all_subnets_enabled }}
+{% endif %}
 
 # interop
 # when genesis time is set to 0, artemis takes genesis time as currentTime + 5 seconds.
@@ -45,13 +60,17 @@ eth1-endpoint: "{{teku_deposit_eth1_endpoint}}"
 #Xtransaction-record-directory: "/tmp/teku"
 
 # logging
-log-color-enabled: False
+log-color-enabled: {{ teku_log_color_enabled }}
 {% if teku_log4j_config_file == "" %}
-log-include-events-enabled: False
-log-destination: 'both'
-log-file: 'teku.log'
-log-file-name-pattern: 'tekuL_%d{yyyy-MM-dd}.log'
+log-include-events-enabled: {{ teku_log_include_events_enabled }}
+log-destination: "{{ teku_log_destination }}"
+log-file: "{{ teku_log_filename }}"
+log-file-name-pattern: "{{ teku_log_filename_pattern }}"
 log-path: "{{teku_log_dir}}"
+logging: "{{ teku_log_level }}"
+{% if teku_log_validator_duties is defined and teku_log_validator_duties != '' %}
+log-include-validator-duties-enabled: {{ teku_log_validator_duties }}
+{% endif %}
 {% endif %}
 
 
@@ -69,6 +88,15 @@ metrics-host-allowlist: [{{teku_metrics_host_allowlist|map('to_json')|join(',')}
 # database
 data-path: "{{teku_data_path}}"
 data-storage-mode: "{{teku_data_storage_mode}}"
+{% if teku_data_beacon_path is defined and teku_data_beacon_path != '' %}
+data-beacon-path: "{{ teku_data_beacon_path }}"
+{% endif %}
+{% if teku_data_storage_archive_frequency is defined and teku_data_storage_archive_frequency != '' %}
+data-storage-archive-frequency: {{ teku_data_storage_archive_frequency }}
+{% endif %}
+{% if teku_data_validator_path is defined and teku_data_validator_path != '' %}
+data-validator-path: "{{ teku_data_validator_path }}"
+{% endif %}
 
 # beaconrestapi
 rest-api-port: {{teku_beacon_rest_api_port}}
@@ -76,6 +104,29 @@ rest-api-docs-enabled: {{teku_beacon_rest_api_docs_enabled}}
 rest-api-enabled: {{teku_beacon_rest_api_enabled}}
 rest-api-interface: "{{teku_beacon_rest_api_interface}}"
 rest-api-host-allowlist: [{{teku_beacon_rest_api_host_allowlist|map('to_json')|join(',')}}]
+
+{% if teku_validators_external_signer_public_keys is defined and teku_validators_external_signer_public_keys != '' %}
+validators-external-signer-public-keys: {{ teku_validators_external_signer_public_keys  }}
+{%  endif %}
+{% if teku_validators_external_signer_timeout is defined and teku_validators_external_signer_timeout != '' %}
+validators-external-signer-timeout: {{ teku_validators_external_signer_timeout }}
+{% endif %}
+{% if teku_validators_external_signer_url is defined and teku_validators_external_signer_url != '' %}
+validators-external-signer-url: "{{ teku_validators_external_signer_url }}"
+{% endif %}
+{% if teku_validators_graffiti is defined and teku_validators_graffiti != '' %}
+validators-graffiti: "{{ teku_validators_graffiti }}"
+{% endif %}
+{% if teku_validators_keystore_locking_enabled is defined and teku_validators_keystore_locking_enabled != '' %}
+validators-keystore-locking-enabled: {{ teku_validators_keystore_locking_enabled }}
+{% endif %}
+{% if teku_validators_performance_tracking_enabled is defined and teku_validators_performance_tracking_enabled != '' %}
+validators-performance-tracking-enabled: {{ teku_validators_performance_tracking_enabled }}
+{% endif %}
+
+{% if teku_ws_checkpoint is defined and teku_ws_checkpoint != '' %}
+ws-checkpoint: "{{ teku_ws_checkpoint }}"
+{% endif %}
 
 {% if teku_validator_key_files != [] %}
 # validators keys

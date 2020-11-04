@@ -82,6 +82,30 @@ All variables which can be overridden are stored in [defaults/main.yml](defaults
 | `teku_env_opts` | [] | |
 | `teku_standalone_validator` | False | Run validator in standalone mode |
 
+
+List of variables which are not defined with default values in ansible role. However if these variables set via command line those will configured in teku configuration file
+
+| Name                                          | Configuration File Parameter             | Description |
+| --------------------------------------------- | ---------------------------------------- | ------------|
+| `teku_data_beacon_path`                       | `data-beacon-path`                       | Path to beacon data |
+| `teku_data_storage_archive_frequency`         | `data-storage-archive-frequency`         | Sets the frequency, in slots, at which to store finalized states to disk |
+| `teku_data_validator_path`                    | `data-validator-path`                    | Path to validator client data |
+| `teku_log_level`                              | `logging`                                | Logging verbosity levels: OFF, FATAL, ERROR, WARN, INFO, DEBUG, TRACE, ALL |
+| `teku_log_validator_duties`                   | `log-include-validator-duties-enabled`   | Whether events are logged when validators perform duties |
+| `teku_p2p_discovery_bootnodes`                | `p2p-discovery-bootnodes`                | List of ENRs of the bootnodes ex: ['enr:-enr-string','enr:-enr-string'] |
+| `teku_p2p_peer_lower_bound`                   | `p2p-peer-lower-bound`                   | Lower bound on the target number of peers |
+| `teku_p2p_peer_upper_bound`                   | `p2p-peer-upper-bound`                   | Upper bound on the target number of peers |
+| `teku_p2p_static_peers`                       | `p2p-static-peers`                       | Static peers. ex: ['peer1-address','peer2-address'] |
+| `teku_p2p_subscribe_all_subnets_enabled`      | `p2p-subscribe-all-subnets-enabled`      | True/False |
+| `teku_validators_external_signer_public_keys` | `validators-external-signer-public-keys` | The list of external signer public keys ex: ['key1','key2'] |
+| `teku_validators_external_signer_timeout`     | `validators-external-signer-timeout`     | Timeout (in milliseconds) for the external signing  service |
+| `teku_validators_external_signer_url`         | `validators-external-signer-url`         | URL for the external signing service |
+| `teku_validators_graffiti`                    | `validators-graffiti`                    | Graffiti to include during block creation (gets converted to bytes and padded to Bytes32) |
+| `teku_validators_keystore_locking_enabled`    | `validators-keystore-locking-enabled`    | Enable locking validator keystore files (Valid values True, False) |
+| `teku_validators_performance_tracking_enabled`| `validators-performance-tracking-enabled`| Enable validator performance tracking and logging (Valid values True, False) |
+| `teku_ws_checkpoint`                          | `ws-checkpoint`                          | A recent checkpoint within the weak subjectivity period. Format <BLOCK_ROOT>:<EPOCH_NUMBER> |
+
+
 ### Standalone Mode
 
 It is possible to configure Teku to run in either monolith mode (both beacon and validator run in same process) or standalone mode(beacon and validator run in its own process).
