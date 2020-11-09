@@ -133,3 +133,7 @@ ws-checkpoint: "{{ teku_ws_checkpoint }}"
 validators-key-files: [{{teku_validator_key_files|map('to_json')|join(',')}}]
 validators-key-password-files: [{{teku_validator_key_password_files|map('to_json')|join(',')}}]
 {% endif %}
+
+{% if teku_validator_keys is defined and teku_validator_keys != [] %}
+validator-keys: [{{teku_validator_keys|map('to_json')|join(',')}}]
+{% endif %}
