@@ -26,7 +26,7 @@ Ansible role that will install, configure and runs [Teku](https://github.com/Peg
 
 ### Role Variables:
 
-All variables which can be overridden are stored in [defaults/main.yml](defaults/main.yml) file. By and large these variables are configuration options. Please refer to the teku [docs](https://teku.hyperledger.org/en/stable/) for more information
+All variables which can be overridden are stored in [defaults/main.yml](defaults/main.yml) file. By and large these variables are configuration options. Please refer to the teku [docs](https://docs.teku.consensys.net/en/latest) for more information
 
 | Name           | Default Value | Description                        |
 | -------------- | ------------- | -----------------------------------|
