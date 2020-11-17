@@ -24,7 +24,7 @@ besu_profile_file: "/etc/profile.d/teku-path.sh"
 teku_log_level: INFO
 teku_log_color_enabled: False
 teku_log_destination: 'DEFAULT_BOTH'
-teku_log_filename: 'teku.log'
+teku_log_filename: "{{ teku_log_dir }}/teku.log"
 teku_log_filename_pattern: 'teku_%d{yyyy-MM-dd}.log'
 teku_log_include_events_enabled: False
 
