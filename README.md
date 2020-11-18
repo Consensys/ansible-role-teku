@@ -37,7 +37,8 @@ All variables which can be overridden are stored in [defaults/main.yml](defaults
 | `teku_install_dir` | /opt/teku | Path to install to  |
 | `teku_config_dir` | /etc/teku | Path for default configuration |
 | `teku_data_dir` | /opt/teku/data | Path for data directory|
-| `teku_log_dir` | /var/log/teku | Path for logs |
+| `teku_log_dir` | /var/log/teku | Path for logs directory |
+| `teku_log_filename` | {{ `teku_log_dir` }}/teku.log | Path containing the location (relative or absolute) and the log filename | 
 | `teku_profile_file` | /etc/profile.d/teku-path.sh | Path to allow loading teku into the system PATH |
 | `teku_managed_service` | true | Enables a systemd service (or launchd if on Darwin) |
 | `teku_launchd_dir` | /Library/LaunchAgents | The default launchd directory  |

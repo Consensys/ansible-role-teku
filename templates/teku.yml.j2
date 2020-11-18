@@ -66,7 +66,6 @@ log-include-events-enabled: {{ teku_log_include_events_enabled }}
 log-destination: "{{ teku_log_destination }}"
 log-file: "{{ teku_log_filename }}"
 log-file-name-pattern: "{{ teku_log_filename_pattern }}"
-log-path: "{{teku_log_dir}}"
 logging: "{{ teku_log_level }}"
 {% if teku_log_validator_duties is defined and teku_log_validator_duties != '' %}
 log-include-validator-duties-enabled: {{ teku_log_validator_duties }}
