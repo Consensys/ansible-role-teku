@@ -10,7 +10,7 @@
 
 - name: Configuration file - monolith
   block:
-  - name: Remove stanalone validator config file
+  - name: Remove standalone validator config file
     file:
       path: "{{ teku_validator_config_file }}"
       state: absent
@@ -24,17 +24,17 @@
       group: "{{ teku_group }}"
     become: true
     register: config_toml
-  when: "not teku_standalone_validator"
+  when: "not teku_standalone_validator | bool"
 
 - name: Set updated optionally to trigger a systemd restart at the end
   set_fact:
     teku_state_updates: "{{ teku_state_updates + ['teku.config_toml'] }}"
-  when: config_toml is changed
+  when: "config_toml is changed"
 
 - name: Generate config file - standalone
   block:
     # Set empty list for key and password files to remove the configuration for beacon in standalone mode
-    - name: Configuration file - beacon
+    - name: Configuration file standalone - beacon
       template:
         src: "{{ teku_config_template }}"
         dest: "{{ teku_beacon_config_file }}"
@@ -46,13 +46,14 @@
         teku_metrics_port: "{{ teku_beacon_metrics_port }}"
         teku_validator_key_files: []
         teku_validator_key_password_files: []
+        teku_validator_keys: []
 
     - name: Set updated optionally to trigger a systemd restart at the end - beacon
       set_fact:
         teku_state_updates_beacon: "{{ teku_state_updates_beacon + ['teku.config_toml'] }}"
-      when: config_toml_beacon is changed
+      when: "config_toml_beacon is changed"
 
-    - name: Configuration file - validator
+    - name: Configuration file standalone - validator
       template:
         src: "{{ teku_config_template }}"
         dest: "{{ teku_validator_config_file }}"
@@ -66,8 +67,8 @@
     - name: Set updated optionally to trigger a systemd restart at the end - validator
       set_fact:
         teku_state_updates_validator: "{{ teku_state_updates_validator + ['teku.config_toml'] }}"
-      when: config_toml_validator is changed
-  when: "teku_standalone_validator"
+      when: "config_toml_validator is changed"
+  when: "teku_standalone_validator | bool"
 
 # TODO: add this in when Teku supports the data dir option - see the pre_install file for now
 #- name: Create data directory
