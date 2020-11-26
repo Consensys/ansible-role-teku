@@ -56,25 +56,17 @@
   become: true
   register: extract_src
 
-- name: Set updated optionally to trigger a systemd restart at the end
-  set_fact:
-    teku_state_updates: "{{ teku_state_updates + ['teku.install_dir'] }}"
-  when: extract_src is changed
-
-# will throw error the first time you install since the service isnt present
-- name: Stop Teku systemd service if running
-  service:
-    name: teku
-    state: stopped
-  when: ( extract_src is changed ) and
-    ( teku_managed_service ) and
-    ( ansible_os_family != "Darwin" )
-  become: true
-  ignore_errors: true
-
 - name: Create a symlink to current
   file:
     src: "{{ teku_install_dir }}/"
     dest: "{{ teku_current_dir }}"
     state: link
+  register: create_symlink
   become: true
+
+- name: Set updated optionally to trigger a systemd restart at the end
+  set_fact:
+    teku_state_updates: "{{ teku_state_updates + ['teku.install_dir'] }}"
+    teku_state_updates_validator: "{{ teku_state_updates_validator + ['teku.install_dir'] }}"
+    teku_state_updates_beacon: "{{ teku_state_updates_beacon + ['teku.install_dir'] }}"
+  when: "extract_src is changed or create_symlink is changed"
