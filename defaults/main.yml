@@ -81,6 +81,10 @@ teku_beacon_rest_api_host_allowlist: ["*"]
 
 teku_cmdline_args: ""
 teku_env_opts: ""
+# Using an internal variable for setting the configuration. This avoids circular reference.
+teku_env_opts_internal: "{{ teku_env_opts }}"
+teku_env_opts_beacon: "{{ teku_env_opts }}"
+teku_env_opts_validator: "{{ teku_env_opts }}"
 
 teku_validator_key_files: []
 teku_validator_key_password_files: []

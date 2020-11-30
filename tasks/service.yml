@@ -116,6 +116,7 @@
       vars:
         teku_log_file: "{{ teku_beacon_log_file }}"
         teku_config_file: "{{ teku_beacon_config_file }}"
+        teku_env_opts_internal: "{{ teku_env_opts_beacon }}"
 
     - name: Set updated optionally to trigger a systemd beacon restart at the end
       set_fact:
@@ -136,6 +137,7 @@
         teku_sub_command: 'validator-client'
         teku_log_file: "{{ teku_validator_log_file }}"
         teku_config_file: "{{ teku_validator_config_file }}"
+        teku_env_opts_internal: "{{ teku_env_opts_validator }}"
 
     - name: Set updated optionally to trigger a systemd validator restart at the end
       set_fact:

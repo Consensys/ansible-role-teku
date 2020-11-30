@@ -81,6 +81,8 @@ All variables which can be overridden are stored in [defaults/main.yml](defaults
 | `teku_beacon_rest_api_host_allowlist` | ["*"] | Host allowlist for for the REST API service |
 | `teku_cmdline_args` | [] | |
 | `teku_env_opts` | [] | |
+| `teku_env_opts_beacon` | `teku_env_opts` | Only applicable in standalone mode. Allows setting beacon specific values |
+| `teku_env_opts_validator` | `teku_env_opts` | Only applicable in standalone mode. Allows setting validator specific values |
 | `teku_standalone_validator` | False | Run validator in standalone mode |
 
 
