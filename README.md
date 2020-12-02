@@ -71,7 +71,7 @@ All variables which can be overridden are stored in [defaults/main.yml](defaults
 | `teku_metrics_port` | 8008 | Metric port when deployed as monolith |
 | `teku_beacon_metrics_port` | 8008 | Beacon service metric port when deployed as standalone |
 | `teku_validator_metrics_port` | 8009 | Validator service metric port when deployed as standalone |
-| `teku_metrics_categories` | ["BEACON", "LIBP2P", "NETWORK", "EVENTBUS", "JVM", "PROCESS"] | Categories for which to track metrics |
+| `teku_metrics_categories` | [] (All categories enabled) | Categories for which to track metrics |
 | `teku_data_path` | /data | Use same folder for both validator and beaon service in standalone mode |
 | `teku_data_storage_mode` | prune | Set the strategy for handling historical chain data |
 | `teku_beacon_rest_api_port` | 5051 | |
