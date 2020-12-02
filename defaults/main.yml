@@ -68,7 +68,7 @@ teku_metrics_enabled: "True"
 teku_metrics_interface: 0.0.0.0
 teku_metrics_host_allowlist: ["*"]
 teku_metrics_port: 8008
-teku_metrics_categories: ["BEACON","LIBP2P","NETWORK","EVENTBUS","JVM","PROCESS","STORAGE","VALIDATOR"]
+teku_metrics_categories: []
 
 teku_data_path: "/data"
 teku_data_storage_mode: "prune"
