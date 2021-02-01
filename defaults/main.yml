@@ -4,7 +4,7 @@ teku_user: teku
 teku_group: "{{ teku_user }}"
 
 # Version to install
-teku_download_url: "https://bintray.com/consensys/pegasys-repo/download_file?file_path=teku-{{ teku_version }}.tar.gz"
+teku_download_url: "https://artifacts.consensys.net/public/teku/raw/names/teku.tar.gz/versions/{{ teku_version }}/teku-{{ teku_version }}.tar.gz"
 
 # Directory paths
 teku_base_dir: "/opt/teku"

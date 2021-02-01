@@ -33,7 +33,7 @@ All variables which can be overridden are stored in [defaults/main.yml](defaults
 | `teku_version` | ___unset___ |  __REQUIRED__ Version of teku to install and run. All available versions are listed on our teku [releases](https://github.com/PegaSysEng/teku/releases) page |
 | `teku_user` | teku | teku user |
 | `teku_group` | teku | teku group |
-| `teku_download_url` | https://bintray.com/consensys/pegasys-repo/download_file?file_path=teku-{{ teku_version }}.tar.gz | The download tar.gz file used. You can use this if you need to retrieve teku from a custom location such as an internal repository. |
+| `teku_download_url` | https://artifacts.consensys.net/public/teku/raw/names/teku.tar.gz/versions/{{ teku_version }}/teku-{{ teku_version }}.tar.gz | The download tar.gz file used. You can use this if you need to retrieve teku from a custom location such as an internal repository. |
 | `teku_install_dir` | /opt/teku | Path to install to  |
 | `teku_config_dir` | /etc/teku | Path for default configuration |
 | `teku_data_dir` | /opt/teku/data | Path for data directory|
