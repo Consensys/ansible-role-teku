@@ -54,7 +54,9 @@ validators-key-file: "{{teku_validators_key_file}}"
 {% if teku_deposit_contract_address != "0x" %}
 eth1-deposit-contract-address: "{{teku_deposit_contract_address}}"
 {% endif %}
+{% if teku_deposit_eth1_endpoint != "" %}
 eth1-endpoint: "{{teku_deposit_eth1_endpoint}}"
+{% endif %}
 
 # output
 #Xtransaction-record-directory: "/tmp/teku"
