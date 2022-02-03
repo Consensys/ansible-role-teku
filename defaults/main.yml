@@ -62,7 +62,7 @@ teku_deposit_mode: "normal"
 teku_deposit_input_file: "" #"validator_test_data.json"
 teku_deposit_number_validators: 64
 teku_deposit_contract_address: "0x"
-teku_deposit_eth1_endpoint: "http://0.0.0.0:8545"
+teku_deposit_eth1_endpoint: ""
 
 teku_metrics_enabled: "True"
 teku_metrics_interface: 0.0.0.0
