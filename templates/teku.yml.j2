@@ -50,16 +50,19 @@ Xinterop-enabled: {{teku_interop_enabled}}
 validators-key-file: "{{teku_validators_key_file}}"
 {% endif %}
 
-# deposit
+# Execution Layer
 {% if teku_deposit_contract_address != "0x" %}
 eth1-deposit-contract-address: "{{teku_deposit_contract_address}}"
 {% endif %}
 {% if teku_deposit_eth1_endpoint != "" %}
 eth1-endpoint: "{{teku_deposit_eth1_endpoint}}"
 {% endif %}
-
-# output
-#Xtransaction-record-directory: "/tmp/teku"
+{% if teku_ee_endpoint is defined and teku_ee_endpoint != "" %}
+ee-endpoint: "{{teku_ee_endpoint}}"
+{% endif %}
+{% if teku_ee_jwt_secret_file is defined and teku_ee_jwt_secret_file != "" %}
+ee-jwt-secret-file: "{{teku_ee_jwt_secret_file}}"
+{% endif %}
 
 # logging
 log-color-enabled: {{ teku_log_color_enabled }}
@@ -137,4 +140,16 @@ validators-key-password-files: [{{teku_validator_key_password_files|map('to_json
 
 {% if teku_validator_keys is defined and teku_validator_keys != [] %}
 validator-keys: [{{teku_validator_keys|map('to_json')|join(',')}}]
+{% endif %}
+
+{% if teku_validators_proposer_default_fee_recipient is defined and teku_validators_proposer_default_fee_recipient != "" %}
+validators-proposer-default-fee-recipient: "{{teku_validators_proposer_default_fee_recipient}}"
+{% endif %}
+
+{% if teku_validators_proposer_config is defined and teku_validators_proposer_config != "" %}
+validators-proposer-config: "{{teku_validators_proposer_config}}"
+{% endif %}
+
+{% if teku_validators_proposer_config_refresh_enabled is defined and teku_validators_proposer_config_refresh_enabled != "" %}
+validators-proposer-config-refresh-enabled: "{{teku_validators_proposer_config_refresh_enabled}}"
 {% endif %}
