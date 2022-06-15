@@ -124,8 +124,8 @@ validators-graffiti: "{{ teku_validators_graffiti }}"
 {% if teku_validators_keystore_locking_enabled is defined and teku_validators_keystore_locking_enabled != '' %}
 validators-keystore-locking-enabled: {{ teku_validators_keystore_locking_enabled }}
 {% endif %}
-{% if teku_validators_performance_tracking_enabled is defined and teku_validators_performance_tracking_enabled != '' %}
-validators-performance-tracking-enabled: {{ teku_validators_performance_tracking_enabled }}
+{% if teku_validators_performance_tracking_enabled is defined and teku_validators_performance_tracking_enabled == True %}
+validators-performance-tracking-mode: "ALL"
 {% endif %}
 
 {% if teku_ws_checkpoint is defined and teku_ws_checkpoint != '' %}
