@@ -81,9 +81,9 @@ teku_beacon_rest_api_host_allowlist: ["*"]
 
 teku_cmdline_args: ""
 # Using an internal variable for setting the configuration. This avoids circular reference.
-teku_cmdline_args_internal: "{{ teku_env_opts }}"
-teku_cmdline_args_beacon: "{{ teku_env_opts }}"
-teku_cmdline_args_validator: "{{ teku_env_opts }}"
+teku_cmdline_args_internal: "{{ teku_cmdline_args }}"
+teku_cmdline_args_beacon: "{{ teku_cmdline_args }}"
+teku_cmdline_args_validator: "{{ teku_cmdline_args }}"
 teku_env_opts: ""
 # Using an internal variable for setting the configuration. This avoids circular reference.
 teku_env_opts_internal: "{{ teku_env_opts }}"
