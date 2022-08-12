@@ -66,7 +66,9 @@ ee-jwt-secret-file: "{{teku_ee_jwt_secret_file}}"
 
 # logging
 log-color-enabled: {{ teku_log_color_enabled }}
-{% if teku_log4j_config_file == "" %}
+{% if teku_log4j_config_file is defined %}
+# Settings for logging are defined in "{{ teku_log4j_config_file }}"
+{% else %}
 log-include-events-enabled: {{ teku_log_include_events_enabled }}
 log-destination: "{{ teku_log_destination }}"
 log-file: "{{ teku_log_filename }}"
