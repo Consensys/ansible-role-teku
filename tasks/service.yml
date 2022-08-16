@@ -112,6 +112,14 @@
       when:
         - "not teku_beacon_enabled | bool"
 
+    - name: Remove beacon systemd file
+      file:
+        path: "{{ teku_beacon_service_file }}"
+        state: absent
+      become: true
+      when:
+        - "not teku_beacon_enabled | bool"
+
     - name: Create Teku beacon systemd service
       template:
         src: "{{ teku_systemd_template }}"
