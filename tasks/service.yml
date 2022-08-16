@@ -104,6 +104,14 @@
         - "not teku_standalone_validator_file_stat.stat.exists | bool"
         - "teku_monolith_file_stat.stat.exists | bool"
 
+    - name: Remove monolith systemd file
+      file:
+        path: "{{ teku_monolith_service_file }}"
+        state: absent
+      become: true
+      when:
+        - "not teku_beacon_enabled | bool"
+
     - name: Create Teku beacon systemd service
       template:
         src: "{{ teku_systemd_template }}"
