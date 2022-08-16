@@ -115,7 +115,7 @@ List of variables which are not defined with default values in ansible role. How
 | `teku_validators_keystore_locking_enabled`        | `validators-keystore-locking-enabled`        | Enable locking validator keystore files (Valid values True, False)                          |
 | `teku_validators_performance_tracking_enabled`    | `validators-performance-tracking-enabled`    | Enable validator performance tracking and logging (Valid values True, False)                |
 | `teku_ws_checkpoint`                              | `ws-checkpoint`                              | A recent checkpoint within the weak subjectivity period. Format <BLOCK_ROOT>:<EPOCH_NUMBER> |
-| `teku_beacon_node_api_endpoint`                   | `beacon-node-api-endpoint`                   | Array. The beacon node API endpoints the validator client should connect to.                |
+| `teku_beacon_node_api_endpoints`                  | `beacon-node-api-endpoints`                  | Array. The beacon node API endpoints the validator client should connect to.                |
 
 
 ### Standalone Mode

@@ -1,8 +1,8 @@
 
 # network
 network: "{{teku_network}}"
-{% if teku_beacon_node_api_endpoint is defined and teku_beacon_node_api_endpoint != [] %}
-beacon-node-api-endpoint: [{{teku_beacon_node_api_endpoint|map('to_json')|join(',')}}]
+{% if teku_beacon_node_api_endpoints is defined and teku_beacon_node_api_endpoints != [] %}
+beacon-node-api-endpoints: [{{teku_beacon_node_api_endpoints|map('to_json')|join(',')}}]
 {% endif %}
 
 {% if teku_initial_state != ""  %}
