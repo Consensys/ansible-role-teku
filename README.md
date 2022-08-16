@@ -86,7 +86,7 @@ All variables which can be overridden are stored in [defaults/main.yml](defaults
 | `teku_env_opts_beacon`                     | `teku_env_opts`                                                                                                              | Only applicable in standalone mode. Allows setting beacon specific values                                                                                   |
 | `teku_env_opts_validator`                  | `teku_env_opts`                                                                                                              | Only applicable in standalone mode. Allows setting validator specific values                                                                                |
 | `teku_standalone_validator`                | False                                                                                                                        | Run validator in standalone mode                                                                                                                            |
-| `teku_beacon_node_api_endpoint`            | ___unset___                                                                                                                  | Specify the beacon node REST API endpoint for the validator client to connect to. The beacon node is not deployed when set.                                 |
+| `teku_beacon_enabled`                      | True                                                                                                                         | Whether to deploy the beacon node                                                                                                                           |
 
 
 List of variables which are not defined with default values in ansible role. However if these variables set via command line those will configured in teku configuration file
@@ -115,6 +115,7 @@ List of variables which are not defined with default values in ansible role. How
 | `teku_validators_keystore_locking_enabled`        | `validators-keystore-locking-enabled`        | Enable locking validator keystore files (Valid values True, False)                          |
 | `teku_validators_performance_tracking_enabled`    | `validators-performance-tracking-enabled`    | Enable validator performance tracking and logging (Valid values True, False)                |
 | `teku_ws_checkpoint`                              | `ws-checkpoint`                              | A recent checkpoint within the weak subjectivity period. Format <BLOCK_ROOT>:<EPOCH_NUMBER> |
+| `teku_beacon_node_api_endpoint`                   | `beacon-node-api-endpoint`                   | Array. The beacon node API endpoints the validator client should connect to.                |
 
 
 ### Standalone Mode

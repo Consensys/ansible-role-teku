@@ -26,7 +26,7 @@
     register: config_toml
   when:
     - "not teku_standalone_validator | bool"
-    - "teku_beacon_node_api_endpoint is not defined"
+    - "teku_beacon_enabled | bool"
 
 - name: Set updated optionally to trigger a systemd restart at the end
   set_fact:
@@ -44,7 +44,7 @@
         group: "{{ teku_group }}"
       become: true
       when:
-        - "teku_beacon_node_api_endpoint is not defined"
+        - "teku_beacon_enabled | bool"
       register: config_toml_beacon
       vars:
         teku_metrics_port: "{{ teku_beacon_metrics_port }}"

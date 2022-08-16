@@ -83,7 +83,7 @@
   when:
     - "ansible_os_family != 'Darwin'"
     - "not teku_standalone_validator | bool"
-    - "teku_beacon_node_api_endpoint is not defined"
+    - "teku_beacon_enabled | bool"
 
 
 # Configure and start standalone services
@@ -113,7 +113,7 @@
       become: true
       when:
         - "teku_managed_service | bool"
-        - "teku_beacon_node_api_endpoint is not defined"
+        - "teku_beacon_enabled | bool"
       register: systemd_file_beacon
       vars:
         teku_log_file: "{{ teku_beacon_log_file }}"
@@ -163,7 +163,7 @@
       register: start_teku_standalone_beacon
       when:
         - "teku_managed_service | bool"
-        - "teku_beacon_node_api_endpoint is not defined"
+        - "teku_beacon_enabled | bool"
 
     - name: Restart Teku service - beacon
       systemd:
@@ -174,7 +174,7 @@
         - "not start_teku_standalone_beacon.changed"
         - "teku_state_updates_beacon|length > 0"
         - "teku_managed_service | bool"
-        - "teku_beacon_node_api_endpoint is not defined"
+        - "teku_beacon_enabled | bool"
 
     - name: Enable and start Teku service - validator
       systemd:
