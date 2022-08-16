@@ -1,6 +1,10 @@
 
 # network
 network: "{{teku_network}}"
+{% if teku_beacon_node_api_endpoint is defined %}
+beacon-node-api-endpoint: "{{ teku_beacon_node_api_endpoint }}"
+{% endif %}
+
 {% if teku_initial_state != ""  %}
 initial-state: "{{teku_initial_state}}"
 {% endif %}
