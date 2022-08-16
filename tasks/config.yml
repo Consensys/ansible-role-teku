@@ -32,13 +32,13 @@
   file:
     path: "{{ teku_monolith_config_file }}"
     state: absent
-    when: "not teku_beacon_enabled | bool"
+  when: "not teku_beacon_enabled | bool"
 
 - name: Configuration file - remove beacon
   file:
     path: "{{ teku_beacon_config_file }}"
     state: absent
-    when: "not teku_beacon_enabled | bool"
+  when: "not teku_beacon_enabled | bool"
 
 - name: Set updated optionally to trigger a systemd restart at the end
   set_fact:
