@@ -28,6 +28,12 @@
     - "not teku_standalone_validator | bool"
     - "teku_beacon_enabled | bool"
 
+- name: Configuration file - remove monolith
+  file:
+    path: "{{ teku_monolith_config_file }}"
+    state: absent
+    when: "not teku_beacon_enabled | bool"
+
 - name: Set updated optionally to trigger a systemd restart at the end
   set_fact:
     teku_state_updates: "{{ teku_state_updates + ['teku.config_toml'] }}"
@@ -51,6 +57,7 @@
         teku_validator_key_files: []
         teku_validator_key_password_files: []
         teku_validator_keys: []
+        teku_beacon_node_api_endpoints: []
 
     - name: Set updated optionally to trigger a systemd restart at the end - beacon
       set_fact:
