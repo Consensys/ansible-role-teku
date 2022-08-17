@@ -24,7 +24,23 @@
       group: "{{ teku_group }}"
     become: true
     register: config_toml
-  when: "not teku_standalone_validator | bool"
+  when:
+    - "not teku_standalone_validator | bool"
+    - "teku_beacon_enabled | bool"
+
+- name: Configuration file - remove monolith
+  file:
+    path: "{{ teku_monolith_config_file }}"
+    state: absent
+  when: "not teku_beacon_enabled | bool"
+  become: true
+
+- name: Configuration file - remove beacon
+  file:
+    path: "{{ teku_beacon_config_file }}"
+    state: absent
+  when: "not teku_beacon_enabled | bool"
+  become: true
 
 - name: Set updated optionally to trigger a systemd restart at the end
   set_fact:
@@ -41,12 +57,15 @@
         owner: "{{ teku_user }}"
         group: "{{ teku_group }}"
       become: true
+      when:
+        - "teku_beacon_enabled | bool"
       register: config_toml_beacon
       vars:
         teku_metrics_port: "{{ teku_beacon_metrics_port }}"
         teku_validator_key_files: []
         teku_validator_key_password_files: []
         teku_validator_keys: []
+        teku_beacon_node_api_endpoints: []
 
     - name: Set updated optionally to trigger a systemd restart at the end - beacon
       set_fact:

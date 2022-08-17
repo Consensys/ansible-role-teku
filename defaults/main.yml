@@ -103,7 +103,8 @@ teku_log_file: "{{ teku_log_dir }}/teku.log"
 teku_config_file: "{{ teku_config_dir }}/teku.yml"
 
 # determine whether to run as standalone validator client. Default is not to run standalone validator
-teku_standalone_validator: False
+teku_beacon_enabled: True
+teku_standalone_validator: "{{ not teku_beacon_enabled | bool }}"
 
 # Configuration for monolith teku client
 teku_monolith_service_name: 'teku'

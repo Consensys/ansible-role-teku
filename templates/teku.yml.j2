@@ -1,6 +1,10 @@
 
 # network
 network: "{{teku_network}}"
+{% if teku_beacon_node_api_endpoints is defined and teku_beacon_node_api_endpoints != [] %}
+beacon-node-api-endpoints: [{{teku_beacon_node_api_endpoints|map('to_json')|join(',')}}]
+{% endif %}
+
 {% if teku_initial_state != ""  %}
 initial-state: "{{teku_initial_state}}"
 {% endif %}
@@ -154,4 +158,8 @@ validators-proposer-config: "{{teku_validators_proposer_config}}"
 
 {% if teku_validators_proposer_config_refresh_enabled is defined and teku_validators_proposer_config_refresh_enabled != "" %}
 validators-proposer-config-refresh-enabled: "{{teku_validators_proposer_config_refresh_enabled}}"
+{% endif %}
+
+{% if teku_validators_early_attestations_enabled is defined and teku_validators_early_attestations_enabled != "" %}
+validators-early-attestations-enabled: {{teku_validators_early_attestations_enabled | bool}}
 {% endif %}

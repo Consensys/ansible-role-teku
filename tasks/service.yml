@@ -83,6 +83,7 @@
   when:
     - "ansible_os_family != 'Darwin'"
     - "not teku_standalone_validator | bool"
+    - "teku_beacon_enabled | bool"
 
 
 # Configure and start standalone services
@@ -103,6 +104,22 @@
         - "not teku_standalone_validator_file_stat.stat.exists | bool"
         - "teku_monolith_file_stat.stat.exists | bool"
 
+    - name: Remove monolith systemd file
+      file:
+        path: "{{ teku_monolith_service_file }}"
+        state: absent
+      become: true
+      when:
+        - "not teku_beacon_enabled | bool"
+
+    - name: Remove beacon systemd file
+      file:
+        path: "{{ teku_beacon_service_file }}"
+        state: absent
+      become: true
+      when:
+        - "not teku_beacon_enabled | bool"
+
     - name: Create Teku beacon systemd service
       template:
         src: "{{ teku_systemd_template }}"
@@ -112,6 +129,7 @@
       become: true
       when:
         - "teku_managed_service | bool"
+        - "teku_beacon_enabled | bool"
       register: systemd_file_beacon
       vars:
         teku_log_file: "{{ teku_beacon_log_file }}"
@@ -161,6 +179,7 @@
       register: start_teku_standalone_beacon
       when:
         - "teku_managed_service | bool"
+        - "teku_beacon_enabled | bool"
 
     - name: Restart Teku service - beacon
       systemd:
@@ -171,6 +190,7 @@
         - "not start_teku_standalone_beacon.changed"
         - "teku_state_updates_beacon|length > 0"
         - "teku_managed_service | bool"
+        - "teku_beacon_enabled | bool"
 
     - name: Enable and start Teku service - validator
       systemd:
