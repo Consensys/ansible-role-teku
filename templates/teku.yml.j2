@@ -160,6 +160,6 @@ validators-proposer-config: "{{teku_validators_proposer_config}}"
 validators-proposer-config-refresh-enabled: "{{teku_validators_proposer_config_refresh_enabled}}"
 {% endif %}
 
-{% if teku_validators_early_attestations_enabled is defined and teku_validator_early_attestations_enabled != "" %}
-validators-early-attestations-enabled: {{teku_validator_early_attestations_enabled | bool}}
+{% if teku_validators_early_attestations_enabled is defined and teku_validators_early_attestations_enabled != "" %}
+validators-early-attestations-enabled: {{teku_validators_early_attestations_enabled | bool}}
 {% endif %}

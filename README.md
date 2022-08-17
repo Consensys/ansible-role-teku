@@ -114,7 +114,7 @@ List of variables which are not defined with default values in ansible role. How
 | `teku_validators_graffiti`                        | `validators-graffiti`                        | Graffiti to include during block creation (gets converted to bytes and padded to Bytes32)   |
 | `teku_validators_keystore_locking_enabled`        | `validators-keystore-locking-enabled`        | Enable locking validator keystore files (Valid values True, False)                          |
 | `teku_validators_performance_tracking_enabled`    | `validators-performance-tracking-enabled`    | Enable validator performance tracking and logging (Valid values True, False)                |
-| `teku_validator_early_attestations_enabled`       | `validators-early-attestations-enabled`      | Enable early attestation production (Valid values True, False)                              |
+| `teku_validators_early_attestations_enabled`      | `validators-early-attestations-enabled`      | Enable early attestation production (Valid values True, False)                              |
 | `teku_ws_checkpoint`                              | `ws-checkpoint`                              | A recent checkpoint within the weak subjectivity period. Format <BLOCK_ROOT>:<EPOCH_NUMBER> |
 | `teku_beacon_node_api_endpoints`                  | `beacon-node-api-endpoints`                  | Array. The beacon node API endpoints the validator client should connect to.                |
 
