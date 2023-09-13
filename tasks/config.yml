@@ -97,7 +97,7 @@
     group: "{{ teku_group }}"
     recurse: yes
   retries: 10
-  delay: 10
+  delay: 5
   register: create_data_dir
   until: create_data_dir is not failed
   become: true
