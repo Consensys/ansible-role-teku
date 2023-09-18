@@ -22,9 +22,9 @@ besu_profile_file: "/etc/profile.d/teku-path.sh"
 # Logging
 teku_log_level: INFO
 teku_log_color_enabled: False
-teku_log_destination: 'DEFAULT_BOTH'
+teku_log_destination: "DEFAULT_BOTH"
 teku_log_filename: "{{ teku_log_dir }}/teku.log"
-teku_log_filename_pattern: 'teku_%d{yyyy-MM-dd}.log'
+teku_log_filename_pattern: "teku_%d{yyyy-MM-dd}.log"
 teku_log_include_events_enabled: False
 
 # Managed service config
@@ -34,6 +34,8 @@ teku_systemd_template: teku.service.j2
 teku_systemd_dir: /etc/systemd/system
 teku_launchd_template: tech.pegasyseng.teku.plist.j2
 teku_launchd_dir: /Library/LaunchAgents
+teku_depends_on_web3signer: False
+teku_depends_on_web3signer_service_name: web3signer.service
 
 # Teku config
 teku_network: minimal
@@ -98,7 +100,7 @@ teku_state_updates_validator: []
 teku_state_updates_beacon: []
 
 # Defaults for monolith service for backward compatibility
-teku_sub_command: ''
+teku_sub_command: ""
 teku_log_file: "{{ teku_log_dir }}/teku.log"
 teku_config_file: "{{ teku_config_dir }}/teku.yml"
 
@@ -107,21 +109,21 @@ teku_beacon_enabled: True
 teku_standalone_validator: "{{ not teku_beacon_enabled | bool }}"
 
 # Configuration for monolith teku client
-teku_monolith_service_name: 'teku'
+teku_monolith_service_name: "teku"
 teku_monolith_service_file: "{{ teku_systemd_dir }}/teku.service"
 teku_monolith_log_file: "{{ teku_log_dir }}/teku.log"
 teku_monolith_config_file: "{{ teku_config_dir }}/teku.yml"
 
 # Configuration for standalone validator client
-teku_validator_service_name: 'teku-validator'
+teku_validator_service_name: "teku-validator"
 teku_validator_service_file: "{{ teku_systemd_dir }}/teku-validator.service"
 teku_validator_log_file: "{{ teku_log_dir }}/teku-validator.log"
 teku_validator_config_file: "{{ teku_config_dir }}/teku-validator.yml"
-teku_validator_metrics_port: '8009'
+teku_validator_metrics_port: "8009"
 
 # Configuration for standalone beacon client
-teku_beacon_service_name: 'teku'
+teku_beacon_service_name: "teku"
 teku_beacon_service_file: "{{ teku_systemd_dir }}/teku.service"
 teku_beacon_log_file: "{{ teku_log_dir }}/teku.log"
 teku_beacon_config_file: "{{ teku_config_dir }}/teku.yml"
-teku_beacon_metrics_port: '8008'
+teku_beacon_metrics_port: "8008"

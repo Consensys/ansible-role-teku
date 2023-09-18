@@ -1,6 +1,6 @@
 [Unit]
 Description=Teku
-After=syslog.target network.target
+After=syslog.target network.target {% if teku_depends_on_web3signer %}{{ teku_depends_on_web3signer_service_name }}{% endif %}
 
 [Service]
 User={{ teku_user }}
