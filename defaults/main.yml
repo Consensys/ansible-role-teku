@@ -127,3 +127,4 @@ teku_beacon_service_file: "{{ teku_systemd_dir }}/teku.service"
 teku_beacon_log_file: "{{ teku_log_dir }}/teku.log"
 teku_beacon_config_file: "{{ teku_config_dir }}/teku.yml"
 teku_beacon_metrics_port: "8008"
+teku_beacon_liveness_tracking: False

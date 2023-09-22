@@ -163,3 +163,7 @@ validators-proposer-config-refresh-enabled: "{{teku_validators_proposer_config_r
 {% if teku_validators_early_attestations_enabled is defined and teku_validators_early_attestations_enabled != "" %}
 validators-early-attestations-enabled: {{teku_validators_early_attestations_enabled | bool}}
 {% endif %}
+
+{% if teku_beacon_liveness_tracking %}
+beacon-liveness-tracking-enabled: {{ teku_beacon_liveness_tracking|bool }}
+{% endif %}
