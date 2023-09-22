@@ -49,6 +49,7 @@
     owner: "{{ teku_user }}"
     group: "{{ teku_group }}"
   register: teku_binary_download
+  become: true
 
 - name: Extract Teku source to install directory
   unarchive:
