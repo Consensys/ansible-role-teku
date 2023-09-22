@@ -43,7 +43,7 @@
   become: true
 
 - name: Download Teku binary
-  ansible.builtin.get_url:
+  ansible.builtin.uri:
     url: "{{ teku_download_url }}"
     dest: "{{ teku_base_dir }}"
     owner: "{{ teku_user }}"
@@ -53,7 +53,7 @@
 
 - name: Extract Teku source to install directory
   unarchive:
-    src: "{{ teku_binary_download.dest }}"
+    src: "{{ teku_binary_download.path }}"
     dest: "{{ teku_install_dir }}"
     remote_src: true
     owner: "{{ teku_user }}"
