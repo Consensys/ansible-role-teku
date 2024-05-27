@@ -6,19 +6,14 @@
     teku_gcp_public_ip: ""
     teku_azure_public_ip: ""
 
-- name: Check if running on AWS
-  uri:
-    url: http://169.254.169.254/latest/meta-data/public-ipv4
-    method: GET
-    return_content: yes
-    status_code: 200
-  register: aws_public_ip_output
+- name: Try to fetch AWS EC2 facts
+  amazon.aws.ec2_metadata_facts:
   ignore_errors: True
 
 - name: Set the host ip if we are in AWS
   set_fact:
-    teku_host_ip: "{{ aws_public_ip_output.content }}"
-  when: aws_public_ip_output.status == 200
+    teku_host_ip: "{{ ansible_ec2_public_ipv4 }}"
+  when: ansible_ec2_public_ipv4 is defined
 
 - name: Check if running on Azure
   uri:
@@ -30,12 +25,12 @@
     status_code: 200
   register: azure_public_ip_output
   ignore_errors: True
-  when: ( aws_public_ip_output.status != 200 )
+  when: ( ansible_ec2_public_ipv4 is undefined )
 
 - name: Set the host ip if we are in Azure
   set_fact:
     teku_host_ip: "{{ azure_public_ip_output.content }}"
-  when: ( aws_public_ip_output.status != 200 ) and
+  when: ( ansible_ec2_public_ipv4 is undefined ) and
     ( azure_public_ip_output.status == 200 )
 
 - name: Check if running on GCP
@@ -48,19 +43,19 @@
     status_code: 200
   register: gcp_public_ip_output
   ignore_errors: True
-  when: ( aws_public_ip_output.status != 200 ) and
+  when: ( ansible_ec2_public_ipv4 is undefined ) and
     ( azure_public_ip_output.status != 200 )
 
 - name: Set the host ip if we are in GCP
   set_fact:
     teku_host_ip: "{{ gcp_public_ip_output.content }}"
-  when: ( aws_public_ip_output.status != 200 ) and
+  when: ( ansible_ec2_public_ipv4 is undefined ) and
     ( azure_public_ip_output.status != 200 ) and
     ( gcp_public_ip_output == 200 )
 
 - name: Fallback to the ansible default ip
   set_fact:
     teku_host_ip: "{{ teku_default_ip }}"
-  when: ( aws_public_ip_output.status != 200 ) and
+  when: ( ansible_ec2_public_ipv4 is undefined ) and
     ( azure_public_ip_output.status != 200 ) and
     ( gcp_public_ip_output != 200 )
