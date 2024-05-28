@@ -41,7 +41,6 @@ teku_depends_on_web3signer_service_name: web3signer.service
 teku_network: minimal
 teku_initial_state: ""
 teku_host_ip: ""
-teku_default_ip: "127.0.0.1"
 
 #node
 teku_p2p_enabled: "True"
