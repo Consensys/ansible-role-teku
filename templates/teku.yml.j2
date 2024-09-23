@@ -14,7 +14,6 @@ initial-state: "{{teku_initial_state}}"
 # false - no discovery, only connect to static peers
 # true - Enable discovery v5
 p2p-enabled: {{teku_p2p_enabled}}
-p2p-flood-publish-enabled: {{teku_p2p_flood_publish_enabled}}
 p2p-interface: "{{teku_p2p_interface}}"
 p2p-port: {{teku_p2p_port}}
 {% if teku_host_ip != "" %}
@@ -28,6 +27,9 @@ p2p-private-key-file: "{{teku_node_private_key_file}}"
 {% endif %}
 {% if teku_p2p_discovery_bootnodes is defined and teku_p2p_discovery_bootnodes != '' %}
 p2p-discovery-bootnodes: {{ teku_p2p_discovery_bootnodes }}
+{% endif %}
+{% if teku_p2p_flood_publish_enabled != "" %}
+p2p-flood-publish-enabled: "{{teku_p2p_flood_publish_enabled}}"
 {% endif %}
 {% if teku_p2p_peer_lower_bound is defined and teku_p2p_peer_lower_bound != '' %}
 p2p-peer-lower-bound: {{ teku_p2p_peer_lower_bound }}
