@@ -44,6 +44,7 @@ teku_host_ip: ""
 
 #node
 teku_p2p_enabled: "True"
+teku_p2p_flood_publish_enabled: "True"
 teku_p2p_interface: 0.0.0.0
 teku_p2p_port: 9000
 teku_p2p_advertised_port: 9000
