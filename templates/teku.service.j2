@@ -7,7 +7,7 @@ User={{ teku_user }}
 Group={{ teku_group }}
 Environment=HOME=/home/{{ teku_user }}
 Environment='TEKU_OPTS={{ teku_env_opts_internal|map('to_json')|join(' ') }}'
-{% if teku_log4j_config_file %}
+{% if teku_log4j_config_file is defined %}
 Environment=LOG4J_CONFIGURATION_FILE={{ teku_log4j_config_file }}
 {% endif %}
 Type=simple
