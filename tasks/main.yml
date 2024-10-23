@@ -6,6 +6,10 @@
         msg: You must set "teku_version" for this role to run
       when: teku_version is not defined
 
+- name: DEBUG - check value for teku_log4j_config_file
+  debug:
+    var: teku_log4j_config_file
+
 # Retrive latest version when teku_version == 'latest'
 - name: Include task to retrieve latest version
   ansible.builtin.include_tasks: "latest.yml"
