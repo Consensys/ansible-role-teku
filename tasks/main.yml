@@ -1,9 +1,15 @@
 ---
 - name: Ensure we have sane configuration
   block:
-    - fail:
+    - name: Check teku version supplied
+      ansible.builtin.fail:
         msg: You must set "teku_version" for this role to run
       when: teku_version is not defined
+
+# Retrive latest version when teku_version == 'latest'
+- name: Include task to retrieve latest version
+  ansible.builtin.include_tasks: "latest.yml"
+  when: teku_version == 'latest'
 
 - name: Include OS and distribution specific variables
   include_vars: "{{ item }}"

@@ -3,12 +3,17 @@
 teku_user: teku
 teku_group: "{{ teku_user }}"
 
+# Internal teku version set to external teku version
+# This is required so that when latest version is discovered it can be updated.
+# Parameters provided via command line cannot be override with set_fact
+_teku_version: "{{ teku_version }}"
+
 # Version to install
-teku_download_url: "https://artifacts.consensys.net/public/teku/raw/names/teku.tar.gz/versions/{{ teku_version }}/teku-{{ teku_version }}.tar.gz"
+teku_download_url: "https://artifacts.consensys.net/public/teku/raw/names/teku.tar.gz/versions/{{ _teku_version }}/teku-{{ _teku_version }}.tar.gz"
 
 # Directory paths
 teku_base_dir: "/opt/teku"
-teku_install_dir: "{{ teku_base_dir }}/teku-{{ teku_version }}"
+teku_install_dir: "{{ teku_base_dir }}/teku-{{ _teku_version }}"
 teku_current_dir: "{{ teku_base_dir }}/current"
 teku_data_dir: "{{ teku_base_dir }}/data"
 teku_data_beacon_dir: "{{ teku_data_dir }}/dir"
