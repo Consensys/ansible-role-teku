@@ -42,7 +42,7 @@
     dest: "/etc/logrotate.d/teku"
   become: true
 
-- name: Download Teku binary
+- name: Download Teku binary for Teku version {{ _teku_version }}
   ansible.builtin.uri:
     url: "{{ teku_download_url }}"
     dest: "{{ teku_base_dir }}"
