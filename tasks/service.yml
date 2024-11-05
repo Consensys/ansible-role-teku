@@ -6,12 +6,14 @@
   register: teku_standalone_validator_file_stat
 
 # Configure and start monolith service
+# Monolith: BN + VC
 - name: Configure monolith
   block:
-
-    # Stop standalone validator and beacon before configuring monolith
-    # Running two validators result in penalty
-    - name: Stop standalone validator service
+_
+    # 1. Check if standalone_validator is running. 
+    # If so then stop standalone_validator and standalone_beacon before bringing up the monolith ie BC + VC together
+    # Running two validators result in penalty !!
+    - name: Check if standalone validator service is running and if so then stop it
       systemd:
         name: "{{ teku_validator_service_name }}"
         state: stopped
@@ -19,6 +21,16 @@
       become: true
       when: "teku_standalone_validator_file_stat.stat.exists | bool"
 
+    # 2. Remove the standalone_validator systemd file because its going to be replaced with the monolith
+    - name: Remove standalone validator systemd file
+      file:
+        path: "{{ teku_validator_service_file }}"
+        state: absent
+      become: true
+
+    # 3. Follow on from step 1 above, also stop the beacon node process (this generally runs in parallel with the standalone validator on the same host)
+    # we dont remove this as we will update the config and use the same service as BC + VC
+    # Hence the systemd_state change in the next op
     - name: Stop standalone beacon service
       systemd:
         name: "{{ teku_beacon_service_name }}"
@@ -32,12 +44,8 @@
         teku_state_updates: "{{ teku_state_updates + ['teku.service_stopped'] }}"
       when: "stop_standalone_beacon is changed"
 
-    - name: Remove standalone validator systemd file
-      file:
-        path: "{{ teku_validator_service_file }}"
-        state: absent
-      become: true
-
+    # 4. Now update/register the monolith systemd service
+    # for ref (teku_monolith_service_file = teku_beacon_service_file)
     - name: Create Teku monolith systemd service
       template:
         src: "{{ teku_systemd_template }}"
@@ -60,25 +68,18 @@
       become: true
       when: systemd_file is changed
 
+    # started here instead of restarted?
     - name: Enable and start Teku service - monolith
       systemd:
         name: "{{ teku_monolith_service_name }}"
-        state: 'started'
+        state: "{{ teku_systemd_state }}"
         enabled: true
       become: true
       register: start_teku_monolith
       when:
         - "teku_managed_service | bool"
-
-    - name: Restart Teku service - monolith
-      systemd:
-        name: "{{ teku_monolith_service_name }}"
-        state: "{{ teku_systemd_state }}"
-      become: true
-      when:
-        - "not start_teku_monolith.changed"
         - "teku_state_updates|length > 0"
-        - "teku_managed_service | bool"
+        # - "not start_teku_monolith.changed"
 
   when:
     - "ansible_os_family != 'Darwin'"
@@ -87,9 +88,13 @@
 
 
 # Configure and start standalone services
+# Standalone: Only VC 
 - name: Configure standalone validator
   block:
 
+    # 1. Check if monolith_service (BC + VC) is running. 
+    # If so then stop monolith_service before bringing up the standalone VC up
+    # Running two validators result in penalty !!
     - name: Check teku systemd file exist
       stat:
         path: "{{ teku_monolith_service_file }}"
@@ -104,6 +109,7 @@
         - "not teku_standalone_validator_file_stat.stat.exists | bool"
         - "teku_monolith_file_stat.stat.exists | bool"
 
+    # 2. If the user chooses to run the beacon node elsewhere, then remove the service
     - name: Remove monolith systemd file
       file:
         path: "{{ teku_monolith_service_file }}"
@@ -112,6 +118,8 @@
       when:
         - "not teku_beacon_enabled | bool"
 
+    # 2b. this is techically the same file as the one in 2 unless the user has specifically chosen different files,
+    # In either case, be safe and remove the file
     - name: Remove beacon systemd file
       file:
         path: "{{ teku_beacon_service_file }}"
@@ -120,6 +128,7 @@
       when:
         - "not teku_beacon_enabled | bool"
 
+    # 3. The opposite of 2, if they choose to start the beacon service then create a service
     - name: Create Teku beacon systemd service
       template:
         src: "{{ teku_systemd_template }}"
@@ -142,6 +151,7 @@
         teku_state_updates_beacon: "{{ teku_state_updates_beacon + ['teku.systemd'] }}"
       when: "systemd_file_beacon is changed"
 
+    # 4. Create the validator service
     - name: Create Teku validator systemd service
       template:
         src: "{{ teku_systemd_template }}"
@@ -170,47 +180,35 @@
       become: true
       when: "systemd_file_beacon is changed or systemd_file_validator is changed"
 
+    # 5. Fire up the services in order
+    # 5.1 beacon if enabled
+    # started here instead of restarted?
     - name: Enable and start Teku service - beacon
       systemd:
         name: "{{ teku_beacon_service_name }}"
-        state: 'started'
+        state: "{{ teku_systemd_state }}"
         enabled: true
       become: true
       register: start_teku_standalone_beacon
       when:
         - "teku_managed_service | bool"
         - "teku_beacon_enabled | bool"
-
-    - name: Restart Teku service - beacon
-      systemd:
-        name: "{{ teku_beacon_service_name }}"
-        state: "{{ teku_systemd_state }}"
-      become: true
-      when:
-        - "not start_teku_standalone_beacon.changed"
         - "teku_state_updates_beacon|length > 0"
-        - "teku_managed_service | bool"
-        - "teku_beacon_enabled | bool"
+        # - "not start_teku_standalone_beacon.changed"
 
+    # started here instead of restarted?
     - name: Enable and start Teku service - validator
       systemd:
         name: "{{ teku_validator_service_name }}"
-        state: 'started'
+        state: "{{ teku_systemd_state }}"
         enabled: true
       become: true
       register: start_teku_standalone_validator
       when:
         - "teku_managed_service | bool"
-
-    - name: Restart Teku service - validator
-      systemd:
-        name: "{{ teku_validator_service_name }}"
-        state: "{{ teku_systemd_state }}"
-      become: true
-      when:
-        - "not start_teku_standalone_validator.changed"
+        - "teku_standalone_validator | bool"
         - "teku_state_updates_validator|length > 0"
-        - "teku_managed_service | bool"
+        # - "not start_teku_standalone_validator.changed"
 
   when:
     - "ansible_os_family != 'Darwin'"
