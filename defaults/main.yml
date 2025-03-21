@@ -23,6 +23,7 @@ teku_output_transition_dir: "/tmp/teku"
 teku_node_private_key_file: ""
 teku_config_template: "teku.yml.j2"
 besu_profile_file: "/etc/profile.d/teku-path.sh"
+teku_version_info_file: "{{ teku_config_dir }}/clc_version"
 
 # Logging
 teku_log_level: INFO
