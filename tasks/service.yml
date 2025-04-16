@@ -15,7 +15,7 @@
       systemd:
         name: "{{ teku_validator_service_name }}"
         state: stopped
-        enabled: no
+        enabled: false
       become: true
       when: "teku_standalone_validator_file_stat.stat.exists | bool"
 
@@ -63,8 +63,8 @@
     - name: Enable and start Teku service - monolith
       systemd:
         name: "{{ teku_monolith_service_name }}"
-        state: 'started'
-        enabled: true
+        state: "{{ teku_systemd_state }}"
+        enabled: "{{ false if teku_systemd_state == 'stopped' else true }}"
       become: true
       register: start_teku_monolith
       when:
@@ -173,8 +173,8 @@
     - name: Enable and start Teku service - beacon
       systemd:
         name: "{{ teku_beacon_service_name }}"
-        state: 'started'
-        enabled: true
+        state: "{{ teku_systemd_state }}"
+        enabled: "{{ false if teku_systemd_state == 'stopped' else true }}"
       become: true
       register: start_teku_standalone_beacon
       when:
@@ -195,8 +195,8 @@
     - name: Enable and start Teku service - validator
       systemd:
         name: "{{ teku_validator_service_name }}"
-        state: 'started'
-        enabled: true
+        state: "{{ teku_systemd_state }}"
+        enabled: "{{ false if teku_systemd_state == 'stopped' else true }}"
       become: true
       register: start_teku_standalone_validator
       when:
