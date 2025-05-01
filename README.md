@@ -22,9 +22,28 @@ Ansible role that will install, configure and runs [Teku](https://github.com/Peg
 
 ### Dependencies
 
-* JDK 11 or greater
+* JDK 21 or greater
 
 ### Role Variables:
+
+Teku has the following operating modes:
+
+1. Monolith = beacon + validator as a single unified process. This is generally used for dev / limited resources 
+      teku_monolith_enabled = true (default)
+
+2. Beacon + Validator = beacon + validator, each as a separate processes on the same machine. If you wish to run them seperately on different machines, use option 3 & 4 below
+      teku_monolith_enabled = false
+      teku_beacon_enabled = true
+      teku_valdiator_enabled = true
+
+3. Beacon = only the beacon client 
+      teku_monolith_enabled = false
+      teku_beacon_enabled = true
+
+4. Validator = only the validator client
+      teku_monolith_enabled = false
+      teku_valdiator_enabled = true
+
 
 All variables which can be overridden are stored in [defaults/main.yml](defaults/main.yml) file. By and large these variables are configuration options. Please refer to the teku [docs](https://docs.teku.consensys.net/en/latest) for more information
 

@@ -1,0 +1,68 @@
+---
+- name: monolith | set vars for the monolith operating mode
+  ansible.builtin.set_fact:
+    teku_service_name: "teku"
+
+- name: monolith | set dependent vars for the monolith operating mode
+  ansible.builtin.set_fact:
+    teku_log_file: "{{ teku_log_dir }}/{{ teku_service_name }}_%d{yyyy-MM-dd}.log"
+    teku_config_file: "{{ teku_config_dir }}/{{ teku_service_name }}.yml"
+    teku_config_template: "config/teku-monolith.yml.j2"
+    teku_service_file: "{{ teku_systemd_dir }}/{{ teku_service_name }}.service"
+    teku_systemd_template: "config/teku-monolith.service.j2"
+    _teku_cmdline_args_monolith: "{{ teku_cmdline_args | join(' ') }}"
+    teku_env_opts_monolith: "{{ teku_env_opts }}"
+
+- name: monolith | generate config file 
+  template:
+    src: "{{ teku_config_template }}"
+    dest: "{{ teku_config_file }}"
+    owner: "{{ teku_user }}"
+    group: "{{ teku_group }}"
+  become: true
+  register: config_toml
+
+- name: monolith | trigger a systemd restart at the end if config_file is changed
+  set_fact:
+    teku_state_updates: "{{ teku_state_updates + ['teku.config_toml'] }}"
+  when: config_toml is changed
+
+- name: monlith | create teku systemd service
+  template:
+    src: "{{ teku_systemd_template }}"
+    dest: "{{ teku_monolith_service_file }}"
+    owner: "root"
+    group: "root"
+  become: true
+  when: teku_managed_service|bool
+  register: systemd_file
+
+- name: monolith | trigger a systemd restart at the end if systemd_file is changed
+  set_fact:
+    teku_state_updates: "{{ teku_state_updates + ['teku.systemd_file'] }}"
+  when: systemd_file is changed
+
+- name: monlith | Reload systemd to reread configs
+  systemd:
+    daemon_reload: yes
+  become: true
+  when: systemd_file is changed
+
+- name: monlith | enable Teku service
+  systemd:
+    name: "{{ teku_service_file }}"
+    state: "{{ teku_systemd_state }}"
+    enabled: "{{ false if teku_systemd_state == 'stopped' else true }}"
+  become: true
+  register: start_teku_monolith
+  when: teku_managed_service|bool
+
+- name: monlith | restart Teku service
+  systemd:
+    name: "{{ teku_service_file }}"
+    state: "{{ teku_systemd_state }}"
+  become: true
+  when:
+    - not start_teku_monolith.changed
+    - teku_state_updates|length > 0
+    - teku_managed_service|bool

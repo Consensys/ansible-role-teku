@@ -12,28 +12,19 @@
     group: "{{ teku_group }}"
   become: true
 
-- name: Create base directory
+- name: Create directories
   file:
-    path: "{{ teku_base_dir }}"
+    path: "{{ item }}"
     state: directory
     owner: "{{ teku_user }}"
     group: "{{ teku_group }}"
-  become: true
-
-- name: Create install directory
-  file:
-    path: "{{ teku_install_dir }}"
-    state: directory
-    owner: "{{ teku_user }}"
-    group: "{{ teku_group }}"
-  become: true
-
-- name: Create log directory
-  file:
-    path: "{{ teku_log_dir }}"
-    state: directory
-    owner: "{{ teku_user }}"
-    group: "{{ teku_group }}"
+  loop:
+    - "{{ teku_base_dir }}"
+    - "{{ teku_install_dir }}"
+    - "{{ teku_config_dir }}"
+    - "{{ teku_log_dir }}"
+    - "{{ teku_data_dir }}"
+    - "{{ teku_validator_data_dir }}"
   become: true
 
 - name: Setup logrotate
@@ -78,4 +69,6 @@
     teku_state_updates: "{{ teku_state_updates + ['teku.install_dir'] }}"
     teku_state_updates_validator: "{{ teku_state_updates_validator + ['teku.install_dir'] }}"
     teku_state_updates_beacon: "{{ teku_state_updates_beacon + ['teku.install_dir'] }}"
-  when: "extract_src is changed or create_symlink is changed"
+  when: >
+    extract_src is changed or 
+    create_symlink is changed

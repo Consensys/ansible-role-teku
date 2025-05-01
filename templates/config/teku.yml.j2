@@ -1,0 +1,169 @@
+
+# network
+network: "{{teku_network}}"
+{% if teku_beacon_node_api_endpoints is defined and teku_beacon_node_api_endpoints != [] %}
+beacon-node-api-endpoints: [{{teku_beacon_node_api_endpoints|map('to_json')|join(',')}}]
+{% endif %}
+
+{% if teku_initial_state != ""  %}
+initial-state: "{{teku_initial_state}}"
+{% endif %}
+
+# p2p
+# p2p-enabled options:
+# false - no discovery, only connect to static peers
+# true - Enable discovery v5
+p2p-enabled: {{teku_p2p_enabled}}
+p2p-interface: "{{teku_p2p_interface}}"
+p2p-port: {{teku_p2p_port}}
+{% if teku_host_ip != "" %}
+p2p-advertised-ip: "{{ teku_host_ip }}"
+{% endif %}
+p2p-advertised-port: {{teku_p2p_advertised_port}}
+p2p-discovery-enabled: {{teku_p2p_discovery_enabled}}
+{% if teku_node_private_key_file != "" %}
+# private_key
+p2p-private-key-file: "{{teku_node_private_key_file}}"
+{% endif %}
+{% if teku_p2p_discovery_bootnodes is defined and teku_p2p_discovery_bootnodes != '' %}
+p2p-discovery-bootnodes: {{ teku_p2p_discovery_bootnodes }}
+{% endif %}
+{% if teku_p2p_peer_lower_bound is defined and teku_p2p_peer_lower_bound != '' %}
+p2p-peer-lower-bound: {{ teku_p2p_peer_lower_bound }}
+{% endif %}
+{% if teku_p2p_peer_upper_bound is defined and teku_p2p_peer_upper_bound != '' %}
+p2p-peer-upper-bound: {{ teku_p2p_peer_upper_bound }}
+{% endif %}
+{% if teku_p2p_static_peers is defined and teku_p2p_static_peers != ''  %}
+p2p-static-peers: {{ teku_p2p_static_peers }}
+{% endif %}
+{% if teku_p2p_subscribe_all_subnets_enabled is defined and teku_p2p_subscribe_all_subnets_enabled != '' %}
+p2p-subscribe-all-subnets-enabled: {{ teku_p2p_subscribe_all_subnets_enabled }}
+{% endif %}
+
+# interop
+# when genesis time is set to 0, artemis takes genesis time as currentTime + 5 seconds.
+Xinterop-genesis-time: {{teku_interop_genesis_time}}
+Xinterop-owned-validator-start-index: {{teku_interop_owned_validator_start_index}}
+Xinterop-owned-validator-count: {{teku_interop_owned_validator_count}}
+Xinterop-number-of-validators: {{teku_interop_number_of_validators}}
+Xinterop-enabled: {{teku_interop_enabled}}
+
+# validator
+{% if teku_validators_key_file != "" %}
+validators-key-file: "{{teku_validators_key_file}}"
+{% endif %}
+
+# Execution Layer
+{% if teku_deposit_contract_address != "0x" %}
+eth1-deposit-contract-address: "{{teku_deposit_contract_address}}"
+{% endif %}
+{% if teku_deposit_eth1_endpoint != "" %}
+eth1-endpoint: "{{teku_deposit_eth1_endpoint}}"
+{% endif %}
+{% if teku_ee_endpoint is defined and teku_ee_endpoint != "" %}
+ee-endpoint: "{{teku_ee_endpoint}}"
+{% endif %}
+{% if teku_ee_jwt_secret_file is defined and teku_ee_jwt_secret_file != "" %}
+ee-jwt-secret-file: "{{teku_ee_jwt_secret_file}}"
+{% endif %}
+
+# logging
+log-color-enabled: {{ teku_log_color_enabled }}
+{% if teku_log4j_config_file is defined %}
+# Settings for logging are defined in "{{ teku_log4j_config_file }}"
+{% else %}
+log-include-events-enabled: {{ teku_log_include_events_enabled }}
+log-destination: "{{ teku_log_destination }}"
+log-file: "{{ teku_log_filename }}"
+log-file-name-pattern: "{{ teku_log_filename_pattern }}"
+logging: "{{ teku_log_level }}"
+{% if teku_log_validator_duties is defined and teku_log_validator_duties != '' %}
+log-include-validator-duties-enabled: {{ teku_log_validator_duties }}
+{% endif %}
+{% endif %}
+
+
+# metrics
+{% if teku_metrics_enabled|bool == True %}
+metrics-enabled: True
+metrics-port: {{teku_metrics_port}}
+metrics-interface : "{{teku_metrics_interface}}"
+{% if teku_metrics_categories != [] %}
+metrics-categories: [{{teku_metrics_categories|map('to_json')|join(',')}}]
+{% endif %}
+metrics-host-allowlist: [{{teku_metrics_host_allowlist|map('to_json')|join(',')}}]
+{% endif %}
+
+# database
+data-path: "{{teku_data_path}}"
+data-storage-mode: "{{teku_data_storage_mode}}"
+{% if teku_data_beacon_path is defined and teku_data_beacon_path != '' %}
+data-beacon-path: "{{ teku_data_beacon_path }}"
+{% endif %}
+{% if teku_data_storage_archive_frequency is defined and teku_data_storage_archive_frequency != '' %}
+data-storage-archive-frequency: {{ teku_data_storage_archive_frequency }}
+{% endif %}
+{% if teku_data_validator_path is defined and teku_data_validator_path != '' %}
+data-validator-path: "{{ teku_data_validator_path }}"
+{% endif %}
+
+# beaconrestapi
+rest-api-port: {{teku_beacon_rest_api_port}}
+rest-api-docs-enabled: {{teku_beacon_rest_api_docs_enabled}}
+rest-api-enabled: {{teku_beacon_rest_api_enabled}}
+rest-api-interface: "{{teku_beacon_rest_api_interface}}"
+rest-api-host-allowlist: [{{teku_beacon_rest_api_host_allowlist|map('to_json')|join(',')}}]
+
+{% if teku_validators_external_signer_public_keys is defined and teku_validators_external_signer_public_keys != '' %}
+validators-external-signer-public-keys: {{ teku_validators_external_signer_public_keys  }}
+{%  endif %}
+{% if teku_validators_external_signer_timeout is defined and teku_validators_external_signer_timeout != '' %}
+validators-external-signer-timeout: {{ teku_validators_external_signer_timeout }}
+{% endif %}
+{% if teku_validators_external_signer_url is defined and teku_validators_external_signer_url != '' %}
+validators-external-signer-url: "{{ teku_validators_external_signer_url }}"
+{% endif %}
+{% if teku_validators_graffiti is defined and teku_validators_graffiti != '' %}
+validators-graffiti: "{{ teku_validators_graffiti }}"
+{% endif %}
+{% if teku_validators_keystore_locking_enabled is defined and teku_validators_keystore_locking_enabled != '' %}
+validators-keystore-locking-enabled: {{ teku_validators_keystore_locking_enabled }}
+{% endif %}
+{% if teku_validators_performance_tracking_enabled is defined and teku_validators_performance_tracking_enabled == True %}
+validators-performance-tracking-mode: "ALL"
+{% endif %}
+
+{% if teku_ws_checkpoint is defined and teku_ws_checkpoint != '' %}
+ws-checkpoint: "{{ teku_ws_checkpoint }}"
+{% endif %}
+
+{% if teku_validator_key_files != [] %}
+# validators keys
+validators-key-files: [{{teku_validator_key_files|map('to_json')|join(',')}}]
+validators-key-password-files: [{{teku_validator_key_password_files|map('to_json')|join(',')}}]
+{% endif %}
+
+{% if teku_validator_keys is defined and teku_validator_keys != [] %}
+validator-keys: [{{teku_validator_keys|map('to_json')|join(',')}}]
+{% endif %}
+
+{% if teku_validators_proposer_default_fee_recipient is defined and teku_validators_proposer_default_fee_recipient != "" %}
+validators-proposer-default-fee-recipient: "{{teku_validators_proposer_default_fee_recipient}}"
+{% endif %}
+
+{% if teku_validators_proposer_config is defined and teku_validators_proposer_config != "" %}
+validators-proposer-config: "{{teku_validators_proposer_config}}"
+{% endif %}
+
+{% if teku_validators_proposer_config_refresh_enabled is defined and teku_validators_proposer_config_refresh_enabled != "" %}
+validators-proposer-config-refresh-enabled: "{{teku_validators_proposer_config_refresh_enabled}}"
+{% endif %}
+
+{% if teku_validators_early_attestations_enabled is defined and teku_validators_early_attestations_enabled != "" %}
+validators-early-attestations-enabled: {{teku_validators_early_attestations_enabled | bool}}
+{% endif %}
+
+{% if teku_beacon_liveness_tracking %}
+beacon-liveness-tracking-enabled: {{ teku_beacon_liveness_tracking|bool }}
+{% endif %}
