@@ -1,23 +1,23 @@
 ---
 # Teku has the following operating modes:
 
-# 1. Monolith = beacon + validator as a single unified process. This is generally used for dev / limited resources 
-#       teku_monolith_enabled = true (default)
+# 1. Combined = beacon + validator as a single unified process. This is generally used for dev / limited resources 
+#       teku_combined_enabled = true (default)
 
 # 2. Beacon + Validator = beacon + validator, each as a separate processes on the same machine. If you wish to run them seperately on different machines, use option 3 & 4 below
-#       teku_monolith_enabled = false
+#       teku_combined_enabled = false
 #       teku_beacon_enabled = true
 #       teku_valdiator_enabled = true
 
 # 3. Beacon = only the beacon client 
-#       teku_monolith_enabled = false
+#       teku_combined_enabled = false
 #       teku_beacon_enabled = true
 
 # 4. Validator = only the validator client
-#       teku_monolith_enabled = false
+#       teku_combined_enabled = false
 #       teku_valdiator_enabled = true
 
-teku_monolith_enabled: true
+teku_combined_enabled: true
 teku_beacon_enabled: false
 teku_validator_enabled: false
 
@@ -47,6 +47,7 @@ teku_log_color_enabled: False
 teku_log_destination: "DEFAULT_BOTH"
 teku_log_include_events_enabled: False
 # Managed service config
+teku_sub_command: ""
 teku_managed_service: true
 teku_systemd_state: restarted
 teku_systemd_dir: /etc/systemd/system
@@ -91,22 +92,24 @@ teku_beacon_rest_api_enabled: "True"
 teku_beacon_rest_api_interface: "127.0.0.1"
 teku_beacon_rest_api_host_allowlist: ["*"]
 teku_beacon_liveness_tracking: False
-# overrides to pass in - unless specified vars refer to monolith mode
+
+# overrides to pass in - unless specified vars refer to combined mode
+_teku_cmdline_args_internal: ""
 teku_cmdline_args: []
 teku_beacon_cmdline_args: []
 teku_validator_cmdline_args: []
+
+_teku_env_opts_internal: ""
 teku_env_opts: []
 teku_beacon_env_opts: []
 teku_validator_env_opts: []
 
 # internal state to maintain idempotency
-teku_state_updates: []
+teku_state_updates_combined: []
 teku_state_updates_beacon: []
 teku_state_updates_validator: []
 
 ##############################################################################
 # Validator settings
-teku_validator_key_files: []
-teku_validator_key_password_files: []
 teku_validator_keys: []
 teku_beacon_node_api_endpoints: []

@@ -1,5 +1,5 @@
 ---
-- name: Ensure we have sane configuration
+- name: main | Ensure we have sane configuration
   block:
     - name: Check teku version supplied
       ansible.builtin.fail:
@@ -7,11 +7,11 @@
       when: teku_version is not defined
 
 # Retrive latest version when teku_version == 'latest'
-- name: Include task to retrieve latest version
+- name: main | Include task to retrieve latest version
   ansible.builtin.include_tasks: latest.yml
   when: teku_version == 'latest'
 
-- name: Include OS and distribution specific variables
+- name:  main | Include OS and distribution specific variables
   ansible.builtin.include_vars: "{{ item }}"
   with_first_found:
     - files:
@@ -19,28 +19,28 @@
         - "{{ ansible_os_family|lower }}.yml"
       skip: true
 
-- name: Get IP address to bind to if not provided
+- name: main | Get IP address to bind to if not provided
   ansible.builtin.include_tasks: network.yml
   when: not teku_host_ip
 
-- name: Install teku
+- name: main | Install teku
   ansible.builtin.include_tasks: install.yml
 
-- name: Teku monolith
-  ansible.builtin.include_tasks: monolith.yml
-  when: teku_monolith_enabled 
+- name: main | Teku combined
+  ansible.builtin.include_tasks: combined.yml
+  when: teku_combined_enabled 
 
-- name: Teku beacon
+- name: main | Teku beacon
   ansible.builtin.include_tasks: beacon.yml
   when: > 
-    not teku_monolith_enabled|bool and
+    not teku_combined_enabled|bool and
     teku_beacon_enabled|bool
 
-- name: Teku validator
+- name: main | Teku validator
   ansible.builtin.include_tasks: validator.yml
   when: > 
-    not teku_monolith_enabled|bool and
-    teku_validator_enabed|bool
+    not teku_combined_enabled|bool and
+    teku_validator_enabled|bool
 
 # - name: Set version info on a local file
 #   include_tasks: "tags.yml"

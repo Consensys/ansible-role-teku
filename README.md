@@ -28,20 +28,20 @@ Ansible role that will install, configure and runs [Teku](https://github.com/Peg
 
 Teku has the following operating modes:
 
-1. Monolith = beacon + validator as a single unified process. This is generally used for dev / limited resources 
-      teku_monolith_enabled = true (default)
+1. Combined = beacon + validator as a single unified process. This is generally used for dev / limited resources 
+      teku_combined_enabled = true (default)
 
 2. Beacon + Validator = beacon + validator, each as a separate processes on the same machine. If you wish to run them seperately on different machines, use option 3 & 4 below
-      teku_monolith_enabled = false
+      teku_combined_enabled = false
       teku_beacon_enabled = true
       teku_valdiator_enabled = true
 
 3. Beacon = only the beacon client 
-      teku_monolith_enabled = false
+      teku_combined_enabled = false
       teku_beacon_enabled = true
 
 4. Validator = only the validator client
-      teku_monolith_enabled = false
+      teku_combined_enabled = false
       teku_valdiator_enabled = true
 
 
@@ -86,7 +86,7 @@ All variables which can be overridden are stored in [defaults/main.yml](defaults
 | `teku_deposit_eth1_endpoint`               | ""                                                                                                                           | JSON-RPC URL of Eth1 node                                                                                                                                   |
 | `teku_metrics_enabled`                     | True                                                                                                                         | Set to true to enable the metrics exporter                                                                                                                  |
 | `teku_metrics_interface`                   | 0.0.0.0                                                                                                                      |                                                                                                                                                             |
-| `teku_metrics_port`                        | 8008                                                                                                                         | Metric port when deployed as monolith                                                                                                                       |
+| `teku_metrics_port`                        | 8008                                                                                                                         | Metric port when deployed as combined                                                                                                                       |
 | `teku_beacon_metrics_port`                 | 8008                                                                                                                         | Beacon service metric port when deployed as standalone                                                                                                      |
 | `teku_validator_metrics_port`              | 8009                                                                                                                         | Validator service metric port when deployed as standalone                                                                                                   |
 | `teku_metrics_categories`                  | [] (All categories enabled)                                                                                                  | Categories for which to track metrics                                                                                                                       |
@@ -139,9 +139,9 @@ List of variables which are not defined with default values in ansible role. How
 
 ### Standalone Mode
 
-It is possible to configure Teku to run in either monolith mode (both beacon and validator run in same process) or standalone mode(beacon and validator run in its own process).
+It is possible to configure Teku to run in either combined mode (both beacon and validator run in same process) or standalone mode(beacon and validator run in its own process).
 Standalone mode runs beacon service its own process and validator service in its own process. Systemd service name `teku` is used for beacon service
-and `teku-validator` is used for validator service when run in standalone mode. Ansible role defaults to run Teku in monolith mode and behaviour can be controlled with the
+and `teku-validator` is used for validator service when run in standalone mode. Ansible role defaults to run Teku in combined mode and behaviour can be controlled with the
 variable `teku_standalone_validator=False/True`.
 
 ### Example Playbook
@@ -208,3 +208,8 @@ Apache
 ### Author Information
 
 PegaSysEng, 2020
+
+
+
+### TODO
+

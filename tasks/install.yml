@@ -1,18 +1,18 @@
 ---
-- name: Ensure Teku group exists
+- name: install | Ensure Teku group exists
   group:
     name: "{{ teku_group }}"
     state: present
   become: true
 
-- name: Create Teku user
+- name: install | Create Teku user
   user:
     comment: Teku client user
     name: "{{ teku_user }}"
     group: "{{ teku_group }}"
   become: true
 
-- name: Create directories
+- name: install | Create directories
   file:
     path: "{{ item }}"
     state: directory
@@ -27,13 +27,13 @@
     - "{{ teku_validator_data_dir }}"
   become: true
 
-- name: Setup logrotate
+- name: install | Setup logrotate
   template:
     src: "logrotate/teku"
     dest: "/etc/logrotate.d/teku"
   become: true
 
-- name: Download Teku binary for Teku version {{ _teku_version }}
+- name: install | Download Teku binary for Teku version {{ _teku_version }}
   ansible.builtin.uri:
     url: "{{ teku_download_url }}"
     dest: "{{ teku_base_dir }}"
@@ -42,7 +42,7 @@
   register: teku_binary_download
   become: true
 
-- name: Extract Teku source to install directory
+- name: install | Extract Teku source to install directory
   unarchive:
     src: "{{ teku_binary_download.path }}"
     dest: "{{ teku_install_dir }}"
@@ -56,7 +56,7 @@
   become: true
   register: extract_src
 
-- name: Create a symlink to current
+- name: install | Create a symlink to current
   file:
     src: "{{ teku_install_dir }}/"
     dest: "{{ teku_current_dir }}"
@@ -64,9 +64,9 @@
   register: create_symlink
   become: true
 
-- name: Set updated optionally to trigger a systemd restart at the end
+- name: install | Set updated optionally to trigger a systemd restart at the end
   set_fact:
-    teku_state_updates: "{{ teku_state_updates + ['teku.install_dir'] }}"
+    teku_state_updates_combined: "{{ teku_state_updates_combined + ['teku.install_dir'] }}"
     teku_state_updates_validator: "{{ teku_state_updates_validator + ['teku.install_dir'] }}"
     teku_state_updates_beacon: "{{ teku_state_updates_beacon + ['teku.install_dir'] }}"
   when: >
