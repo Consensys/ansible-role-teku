@@ -25,6 +25,51 @@ Ansible role that will install, configure and runs [Teku](https://github.com/Peg
 
 ### Role Variables:
 
+**BREAKING CHANGES FROM VERSION 25.5.0 and upwards**
+
+The following have switched types from string to list
+```bash
+teku_cmdline_args`: []
+teku_cmdline_args_beacon: []
+teku_cmdline_args_validator: []
+teku_env_opts: []
+teku_env_opts_beacon: []
+teku_env_opts_validator: []
+```
+
+The following vars have been removed:
+```bash
+teku_cmdline_args_internal
+teku_env_opts_internal
+teku_validator_key_files & teku_validator_key_password_files. # Please use `teku_validator_keys`
+```
+
+The following vars have been renamed:
+```bash
+teku_cmdline_args_beacon:""  -> teku_beacon_cmdline_args:[]
+teku_cmdline_args_beacon:""  -> teku_validator_cmdline_args:[]
+
+```
+
+
+**If you have a combined (monolith config):**
+Nothing changes apart from the vars above if you were using them
+
+**If you were using a standalone beacon:**
+Nothing changes apart from the vars above if you were using them
+
+**If you were using a standalone validator:**
+Please remove
+```
+teku_standalone_validator: true
+```
+and use
+```
+teku_combined_enabled: false
+teku_beacon_enabled: true  # or false if you have the beacon elsewhere
+teku_valdiator_enabled: true
+```
+
 Teku has the following operating modes:
 
 1. Combined = beacon + validator as a single unified process. This is generally used for dev / limited resources. This is the default option
