@@ -11,7 +11,7 @@
     teku_config_template: "config/{{ teku_service_name }}.yml.j2"
     teku_service_file: "{{ teku_systemd_dir }}/{{ teku_service_name }}.service"
     teku_systemd_template: "service/teku.service.j2"
-    _teku_cmdline_args_internal: "{{ teku_cmdline_args | join(' ') }}"
+    _teku_combined_cmdline_args_internal: "{{ teku_combined_cmdline_args | join(' ') }}"
     _teku_env_opts_internal: "{{ teku_env_opts }}"
 
 - name: combined | generate config file 
@@ -25,20 +25,20 @@
 
 - name: combined | add custom cli args if provided
   ansible.builtin.set_fact:
-    _teku_cmdline_args_internal: >
-      {{_teku_cmdline_args_internal}}
-      {{ teku_cmdline_args | join(' ') }}
-  when: teku_cmdline_args != ""
+    _teku_combined_cmdline_args_internal: >
+      {{_teku_combined_cmdline_args_internal}}
+      {{ teku_combined_cmdline_args | join(' ') }}
+  when: teku_combined_cmdline_args != ""
 
 - name: combined | sanitize beacon cmdline_args
   ansible.builtin.set_fact:
-    _teku_cmdline_args_internal: "{{ _teku_cmdline_args_internal | replace('\n', '') | replace('\"', '')}}"
-  when: teku_cmdline_args != ""
+    _teku_combined_cmdline_args_internal: "{{ _teku_combined_cmdline_args_internal | replace('\n', '') | replace('\"', '')}}"
+  when: teku_combined_cmdline_args != ""
 
 - name: combined | show cmdline_args
   ansible.builtin.debug:
-    msg: "{{ _teku_cmdline_args_internal }}"
-  when: teku_cmdline_args != ""
+    msg: "{{ _teku_combined_cmdline_args_internal }}"
+  when: teku_combined_cmdline_args != ""
 
 - name: combined | trigger a systemd restart at the end if config_file is changed
   ansible.builtin.set_fact:

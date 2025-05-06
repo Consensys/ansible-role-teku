@@ -29,9 +29,9 @@ Ansible role that will install, configure and runs [Teku](https://github.com/Peg
 
 The following have switched types from string to list
 ```bash
-teku_cmdline_args`: []
-teku_cmdline_args_beacon: []
-teku_cmdline_args_validator: []
+teku_combined_cmdline_args`: []
+teku_combined_cmdline_args_beacon: []
+teku_combined_cmdline_args_validator: []
 teku_env_opts: []
 teku_env_opts_beacon: []
 teku_env_opts_validator: []
@@ -39,16 +39,16 @@ teku_env_opts_validator: []
 
 The following vars have been removed:
 ```bash
-teku_cmdline_args_internal
+teku_combined_cmdline_args_internal
 teku_env_opts_internal
 teku_validator_key_files & teku_validator_key_password_files. # Please use `teku_validator_keys`
 ```
 
 The following vars have been renamed:
 ```bash
-teku_cmdline_args_beacon:""  -> teku_beacon_cmdline_args:[]
-teku_cmdline_args_beacon:""  -> teku_validator_cmdline_args:[]
-
+teku_cmdline_args:""           -> teku_combined_cmdline_args:[]
+teku_cmdline_args_beacon:""    -> teku_beacon_cmdline_args:[]
+teku_cmdline_args_validator:"" -> teku_validator_cmdline_args:[]
 ```
 
 
@@ -67,7 +67,7 @@ and use
 ```
 teku_combined_enabled: false
 teku_beacon_enabled: true  # or false if you have the beacon elsewhere
-teku_valdiator_enabled: true
+teku_validator_enabled: true
 ```
 
 Teku has the following operating modes:
@@ -81,7 +81,7 @@ Teku has the following operating modes:
       ```bash
       teku_combined_enabled: false
       teku_beacon_enabled: true
-      teku_valdiator_enabled: true
+      teku_validator_enabled: true
       ```
 
 3. Beacon = only the beacon client 
@@ -93,7 +93,7 @@ Teku has the following operating modes:
 4. Validator = only the validator client
       ```bash
       teku_combined_enabled: false
-      teku_valdiator_enabled: true
+      teku_validator_enabled: true
       ```
 
 All variables which can be overridden are stored in [defaults/main.yml](defaults/main.yml) file. By and large these variables are configuration options. Please refer to the teku [docs](https://docs.teku.consensys.net/en/latest) for more information
@@ -147,12 +147,13 @@ All variables which can be overridden are stored in [defaults/main.yml](defaults
 | `teku_data_storage_mode`                   | prune    | Set the strategy for handling historical chain data                                |
 | `teku_beacon_rest_api_port`                | 5051     |                                         |
 | `teku_beacon_rest_api_docs_enabled`        | False    |                                         |
+| `teku_validator_keys`                      | []       | Of the form "/path/to/keys:/path/to/secrets" |
 | `teku_beacon_rest_api_enabled`             | True     | Enable the REST API service             |
 | `teku_beacon_rest_api_interface`           | 127.0.0.1| Interface for the REST API service      |
 | `teku_beacon_rest_api_host_allowlist`      | ["*"]    | Host allowlist for for the REST API service                                        |
-| `teku_cmdline_args`                        | []       |                                         |
-| `teku_cmdline_args_beacon`                 | []       | Only applicable in single process standalone mode. Allows setting beacon specific values          |
-| `teku_cmdline_args_validator`              | []       | Only applicable in single process standalone mode. Allows setting validator specific values       |
+| `teku_combined_cmdline_args`                        | []       |  Only applicable in combined or monolith mode                                       |
+| `teku_combined_cmdline_args_beacon`                 | []       | Only applicable in single process standalone mode. Allows setting beacon specific values          |
+| `teku_combined_cmdline_args_validator`              | []       | Only applicable in single process standalone mode. Allows setting validator specific values       |
 | `teku_env_opts`                            | []       |                                         |
 | `teku_env_opts_beacon`                     | []       | Only applicable in single process standalone mode. Allows setting beacon specific values          |
 | `teku_env_opts_validator`                  | []       | Only applicable in single process standalone mode. Allows setting validator specific values       |

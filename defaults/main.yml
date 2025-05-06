@@ -94,8 +94,8 @@ teku_beacon_rest_api_host_allowlist: ["*"]
 teku_beacon_liveness_tracking: False
 
 # overrides to pass in - unless specified vars refer to combined mode
-_teku_cmdline_args_internal: ""
-teku_cmdline_args: []
+_teku_combined_cmdline_args_internal: ""
+teku_combined_cmdline_args: []
 teku_beacon_cmdline_args: []
 teku_validator_cmdline_args: []
 
