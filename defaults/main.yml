@@ -101,7 +101,7 @@ teku_validator_cmdline_args: []
 
 _teku_env_opts_internal: ""
 teku_env_opts: []
-teku_beacon_env_opts: []
+teku_env_opts_beacon: []
 teku_env_opts_validator: []
 
 # internal state to maintain idempotency

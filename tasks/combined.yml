@@ -8,7 +8,7 @@
     teku_log_file: "{{ teku_log_dir }}/{{ teku_service_name }}_{{ now(utc=true,fmt='%Y-%m-%d') }}.log"
     teku_log_filename_pattern: "{{ teku_service_name }}_%d{yyyy-MM-dd}.log"
     teku_config_file: "{{ teku_config_dir }}/{{ teku_service_name }}.yml"
-    teku_config_template: "config/teku.yml.j2"
+    teku_config_template: "config/{{ teku_service_name }}.yml.j2"
     teku_service_file: "{{ teku_systemd_dir }}/{{ teku_service_name }}.service"
     teku_systemd_template: "service/teku.service.j2"
     _teku_cmdline_args_internal: "{{ teku_cmdline_args | join(' ') }}"

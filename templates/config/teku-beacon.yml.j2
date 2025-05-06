@@ -1,6 +1,5 @@
-
 ######################
-# TEKU  COMBINED
+# TEKU  BEACON
 ######################
 
 # network
@@ -134,56 +133,4 @@ rest-api-host-allowlist: [{{teku_beacon_rest_api_host_allowlist|map('to_json')|j
 
 {% if teku_beacon_liveness_tracking %}
 beacon-liveness-tracking-enabled: {{teku_beacon_liveness_tracking|bool}}
-{% endif %}
-
-######################
-# validator
-######################
-{% if teku_beacon_node_api_endpoints is defined and teku_beacon_node_api_endpoints != [] %}
-beacon-node-api-endpoints: [{{teku_beacon_node_api_endpoints|map('to_json')|join(',')}}]
-{% endif %}
-
-{% if teku_validator_keys is defined and teku_validator_keys != [] %}
-validator-keys: [{{teku_validator_keys|map('to_json')|join(',')}}]
-{% endif %}
-
-{% if teku_validators_proposer_default_fee_recipient is defined and teku_validators_proposer_default_fee_recipient != "" %}
-validators-proposer-default-fee-recipient: "{{teku_validators_proposer_default_fee_recipient}}"
-{% endif %}
-
-{% if teku_validators_proposer_config is defined and teku_validators_proposer_config != "" %}
-validators-proposer-config: "{{teku_validators_proposer_config}}"
-{% endif %}
-
-{% if teku_validators_proposer_config_refresh_enabled is defined and teku_validators_proposer_config_refresh_enabled != "" %}
-validators-proposer-config-refresh-enabled: "{{teku_validators_proposer_config_refresh_enabled}}"
-{% endif %}
-
-{% if teku_validators_early_attestations_enabled is defined and teku_validators_early_attestations_enabled != "" %}
-validators-early-attestations-enabled: {{teku_validators_early_attestations_enabled | bool}}
-{% endif %}
-
-### external signing
-{% if teku_validators_external_signer_public_keys is defined and teku_validators_external_signer_public_keys != '' %}
-validators-external-signer-public-keys: {{teku_validators_external_signer_public_keys }}
-{%  endif %}
-
-{% if teku_validators_external_signer_timeout is defined and teku_validators_external_signer_timeout != '' %}
-validators-external-signer-timeout: {{teku_validators_external_signer_timeout}}
-
-{% endif %}
-{% if teku_validators_external_signer_url is defined and teku_validators_external_signer_url != '' %}
-validators-external-signer-url: "{{teku_validators_external_signer_url}}"
-{% endif %}
-
-{% if teku_validators_graffiti is defined and teku_validators_graffiti != '' %}
-validators-graffiti: "{{teku_validators_graffiti}}"
-{% endif %}
-
-{% if teku_validators_keystore_locking_enabled is defined and teku_validators_keystore_locking_enabled != '' %}
-validators-keystore-locking-enabled: {{teku_validators_keystore_locking_enabled}}
-{% endif %}
-
-{% if teku_validators_performance_tracking_enabled is defined and teku_validators_performance_tracking_enabled == True %}
-validators-performance-tracking-mode: "ALL"
 {% endif %}

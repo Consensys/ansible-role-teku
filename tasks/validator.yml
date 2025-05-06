@@ -8,7 +8,7 @@
     teku_log_file: "{{ teku_log_dir }}/{{ teku_service_name }}.log"
     teku_log_filename_pattern: "{{ teku_service_name }}_%d{yyyy-MM-dd}.log"
     teku_config_file: "{{ teku_config_dir }}/{{ teku_service_name }}.yml"
-    teku_config_template: "config/teku.yml.j2"
+    teku_config_template: "config/{{ teku_service_name }}.yml.j2"
     teku_service_file: "{{ teku_systemd_dir }}/{{ teku_service_name }}.service"
     teku_systemd_template: "service/teku.service.j2"
     _teku_cmdline_args_internal: "{{ teku_validator_cmdline_args | join(' ') }}"
@@ -25,7 +25,6 @@
   become: true
   register: config_toml
   vars:
-    teku_metrics_port: "{{ teku_validator_metrics_port }}"
     teku_data_dir: "{{ teku_validator_data_dir }}"
 
 - name: validator | trigger a systemd restart at the end if config_file is changed
