@@ -12,7 +12,7 @@
     teku_service_file: "{{ teku_systemd_dir }}/{{ teku_service_name }}.service"
     teku_systemd_template: "service/teku.service.j2"
     _teku_cmdline_args_internal: "{{ teku_validator_cmdline_args | join(' ') }}"
-    teku_validator_env_opts: "{{ teku_validator_env_opts }}"
+    _teku_env_opts_internal: "{{ teku_env_opts_validator }}"
     teku_sub_command: "validator-client"
     teku_data_dir: "{{teku_validator_data_dir}}"
 
