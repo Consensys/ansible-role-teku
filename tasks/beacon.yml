@@ -11,8 +11,8 @@
     teku_config_template: "config/{{ teku_service_name }}.yml.j2"
     teku_service_file: "{{ teku_systemd_dir }}/{{ teku_service_name }}.service"
     teku_systemd_template: "service/teku.service.j2"
-    _teku_combined_cmdline_args_internal: "{{ teku_beacon_cmdline_args | join(' ') }}"
-    _teku_env_opts_internal: "{{ teku_env_opts_beacon }}"
+    _teku_cmdline_args_internal: "{{ teku_beacon_cmdline_args | join(' ') }}"
+    _teku_env_opts_internal: "{{ teku_beacon_env_opts }}"
 
 - name: beacon | generate config file 
   ansible.builtin.template:
@@ -25,25 +25,18 @@
 
 - name: beacon | trigger a systemd restart at the end if config_file is changed
   ansible.builtin.set_fact:
-    teku_state_updates_beacon: "{{ teku_state_updates_beacon + ['teku.config_toml'] }}"
+    teku_beacon_state_updates: "{{ teku_beacon_state_updates + ['teku.config_toml'] }}"
   when: config_toml is changed
-
-- name: beacon | add custom cli args if provided
-  ansible.builtin.set_fact:
-    _teku_combined_cmdline_args_internal: >
-      {{_teku_combined_cmdline_args_internal}}
-      {{ teku_beacon_cmdline_args | join(' ') }}
-  when: teku_beacon_cmdline_args != ""
 
 - name: beacon | sanitize beacon cmdline_args
   ansible.builtin.set_fact:
-    _teku_combined_cmdline_args_internal: "{{ _teku_combined_cmdline_args_internal | replace('\n', '') | replace('\"', '')}}"
-  when: teku_beacon_cmdline_args != ""
+    _teku_cmdline_args_internal: "{{ _teku_cmdline_args_internal | replace('\n', '') | replace('\"', '')}}"
+  when: teku_beacon_cmdline_args != []
 
 - name: beacon | show cmdline_args
   ansible.builtin.debug:
-    msg: "{{ _teku_combined_cmdline_args_internal }}"
-  when: teku_beacon_cmdline_args != ""
+    msg: "{{ _teku_cmdline_args_internal }}"
+  when: teku_beacon_cmdline_args != []
 
 - name: beacon | create teku systemd service
   ansible.builtin.template:
@@ -57,7 +50,7 @@
 
 - name: beacon | trigger a systemd restart at the end if systemd_file is changed
   ansible.builtin.set_fact:
-    teku_state_updates_beacon: "{{ teku_state_updates_beacon + ['teku.systemd_file'] }}"
+    teku_beacon_state_updates: "{{ teku_beacon_state_updates + ['teku.systemd_file'] }}"
   when: systemd_file is changed
 
 - name: beacon | Reload systemd to reread configs
@@ -82,5 +75,5 @@
   become: true
   when:
     - not start_teku_beacon.changed
-    - teku_state_updates_beacon|length > 0
+    - teku_beacon_state_updates|length > 0
     - teku_managed_service|bool

@@ -94,20 +94,21 @@ teku_beacon_rest_api_host_allowlist: ["*"]
 teku_beacon_liveness_tracking: False
 
 # overrides to pass in - unless specified vars refer to combined mode
-_teku_combined_cmdline_args_internal: ""
+_teku_cmdline_args_internal: ""
 teku_combined_cmdline_args: []
 teku_beacon_cmdline_args: []
 teku_validator_cmdline_args: []
 
 _teku_env_opts_internal: ""
-teku_env_opts: []
-teku_env_opts_beacon: []
-teku_env_opts_validator: []
+teku_combined_env_opts: []
+teku_beacon_env_opts: []
+teku_validator_env_opts: []
+
 
 # internal state to maintain idempotency
-teku_state_updates_combined: []
-teku_state_updates_beacon: []
-teku_state_updates_validator: []
+teku_combined_state_updates: []
+teku_beacon_state_updates: []
+teku_validator_state_updates: []
 
 ##############################################################################
 # Validator settings

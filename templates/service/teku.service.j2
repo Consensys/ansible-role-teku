@@ -11,7 +11,7 @@ Environment='TEKU_OPTS={{ _teku_env_opts_internal|map('to_json')|join(' ') }}'
 Environment=LOG4J_CONFIGURATION_FILE={{ teku_log4j_config_file }}
 {% endif %}
 Type=simple
-ExecStart=/bin/sh -c "{{ teku_current_dir }}/bin/teku -c {{ teku_config_file }} {{ teku_sub_command }} {{ _teku_combined_cmdline_args_internal }} >> {{ teku_log_file }} 2>&1"
+ExecStart=/bin/sh -c "{{ teku_current_dir }}/bin/teku -c {{ teku_config_file }} {{ teku_sub_command }} {{ _teku_cmdline_args_internal }} >> {{ teku_log_file }} 2>&1"
 SuccessExitStatus=143
 Restart=on-failure
 RestartSec=10s

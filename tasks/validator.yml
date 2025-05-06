@@ -11,8 +11,8 @@
     teku_config_template: "config/{{ teku_service_name }}.yml.j2"
     teku_service_file: "{{ teku_systemd_dir }}/{{ teku_service_name }}.service"
     teku_systemd_template: "service/teku.service.j2"
-    _teku_combined_cmdline_args_internal: "{{ teku_validator_cmdline_args | join(' ') }}"
-    _teku_env_opts_internal: "{{ teku_env_opts_validator }}"
+    _teku_cmdline_args_internal: "{{ teku_validator_cmdline_args | join(' ') }}"
+    _teku_env_opts_internal: "{{ teku_validator_env_opts }}"
     teku_sub_command: "validator-client"
     teku_validator_data_dir: "{{teku_data_dir}}"
 
@@ -29,25 +29,18 @@
 
 - name: validator | trigger a systemd restart at the end if config_file is changed
   ansible.builtin.set_fact:
-    teku_state_updates_validator: "{{ teku_state_updates_validator + ['teku.config_toml'] }}"
+    teku_validator_state_updates: "{{ teku_validator_state_updates + ['teku.config_toml'] }}"
   when: config_toml is changed
-
-- name: validator | add custom cli args if provided
-  ansible.builtin.set_fact:
-    _teku_combined_cmdline_args_internal: >
-      {{_teku_combined_cmdline_args_internal}}
-      {{ teku_validator_cmdline_args | join(' ') }}
-  when: teku_validator_cmdline_args != ""
 
 - name: validator | sanitize beacon cmdline_args
   ansible.builtin.set_fact:
-    _teku_combined_cmdline_args_internal: "{{ _teku_combined_cmdline_args_internal | replace('\n', '') | replace('\"', '')}}"
-  when: teku_validator_cmdline_args != ""
+    _teku_cmdline_args_internal: "{{ _teku_cmdline_args_internal | replace('\n', '') | replace('\"', '')}}"
+  when: teku_validator_cmdline_args != []
 
 - name: validator | show cmdline_args
   ansible.builtin.debug:
-    msg: "{{ _teku_combined_cmdline_args_internal }}"
-  when: teku_validator_cmdline_args != ""
+    msg: "{{ _teku_cmdline_args_internal }}"
+  when: teku_validator_cmdline_args != []
 
 - name: validator | create teku systemd service
   ansible.builtin.template:
@@ -71,7 +64,7 @@
 
 - name: validator | trigger a systemd restart at the end if systemd_file is changed
   ansible.builtin.set_fact:
-    teku_state_updates_validator: "{{ teku_state_updates_validator + ['teku.systemd_file'] }}"
+    teku_validator_state_updates: "{{ teku_validator_state_updates + ['teku.systemd_file'] }}"
   when: systemd_file is changed
 
 - name: validator | Reload systemd to reread configs
@@ -96,5 +89,5 @@
   become: true
   when:
     - not start_teku_validator.changed
-    - teku_state_updates_validator|length > 0
+    - teku_validator_state_updates|length > 0
     - teku_managed_service|bool

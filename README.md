@@ -30,11 +30,11 @@ Ansible role that will install, configure and runs [Teku](https://github.com/Peg
 The following have switched types from string to list
 ```bash
 teku_combined_cmdline_args`: []
-teku_combined_cmdline_args_beacon: []
-teku_combined_cmdline_args_validator: []
-teku_env_opts: []
-teku_env_opts_beacon: []
-teku_env_opts_validator: []
+teku_beacon_cmdline_args: []
+teku_validator_cmdline_args: []
+teku_combined_env_opts: []
+teku_beacon_env_opts: []
+teku_validator_env_opts: []
 ```
 
 The following vars have been removed:
@@ -49,6 +49,9 @@ The following vars have been renamed:
 teku_cmdline_args:""           -> teku_combined_cmdline_args:[]
 teku_cmdline_args_beacon:""    -> teku_beacon_cmdline_args:[]
 teku_cmdline_args_validator:"" -> teku_validator_cmdline_args:[]
+teku_env_opts:""           -> teku_combined_env_opts:[]
+teku_env_opts_beacon:""    -> teku_beacon_env_opts:[]
+teku_env_opts_validator:"" -> teku_validator_env_opts:[]
 ```
 
 
@@ -155,8 +158,8 @@ All variables which can be overridden are stored in [defaults/main.yml](defaults
 | `teku_combined_cmdline_args_beacon`                 | []       | Only applicable in single process standalone mode. Allows setting beacon specific values          |
 | `teku_combined_cmdline_args_validator`              | []       | Only applicable in single process standalone mode. Allows setting validator specific values       |
 | `teku_env_opts`                            | []       |                                         |
-| `teku_env_opts_beacon`                     | []       | Only applicable in single process standalone mode. Allows setting beacon specific values          |
-| `teku_env_opts_validator`                  | []       | Only applicable in single process standalone mode. Allows setting validator specific values       |
+| `teku_beacon_env_opts`                     | []       | Only applicable in single process standalone mode. Allows setting beacon specific values          |
+| `teku_validator_env_opts`                  | []       | Only applicable in single process standalone mode. Allows setting validator specific values       |
 
 List of variables which are not defined with default values in ansible role. However if these variables set via command line those will configured in teku configuration file
 
