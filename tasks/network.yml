@@ -1,13 +1,13 @@
 ---
-- name: Get the default ipv4 address - and set this as the default fallback 
-  set_fact:
+- name: network | Get the default ipv4 address - and set this as the default fallback 
+  ansible.builtin. set_fact:
     teku_host_ip: >-
       {{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] if
       hostvars[inventory_hostname]['ansible_default_ipv4']['address'] is
       defined else '127.0.0.1' }}
 
-- name: Fetch public IP 
-  uri:
+- name: network | Fetch public IP 
+  ansible.builtin.uri:
     url: http://ifconfig.me/ip
     method: GET
     return_content: yes
@@ -15,7 +15,7 @@
   register: teku_public_ip_output
   ignore_errors: True
 
-- name: Set the host ip
-  set_fact:
+- name: network | Set the host ip
+  ansible.builtin.set_fact:
     teku_host_ip: "{{ teku_public_ip_output.content }}"
   when: teku_public_ip_output.status == 200

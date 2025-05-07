@@ -1,0 +1,79 @@
+---
+- name: combined | set vars for the combined operating mode
+  ansible.builtin.set_fact:
+    teku_service_name: "teku"
+
+- name: combined | set dependent vars for the combined operating mode
+  ansible.builtin.set_fact:
+    teku_log_file: "{{ teku_log_dir }}/{{ teku_service_name }}_{{ now(utc=true,fmt='%Y-%m-%d') }}.log"
+    teku_log_filename_pattern: "{{ teku_service_name }}_%d{yyyy-MM-dd}.log"
+    teku_config_file: "{{ teku_config_dir }}/{{ teku_service_name }}.yml"
+    teku_config_template: "config/{{ teku_service_name }}.yml.j2"
+    teku_service_file: "{{ teku_systemd_dir }}/{{ teku_service_name }}.service"
+    teku_systemd_template: "service/teku.service.j2"
+    _teku_cmdline_args_internal: "{{ teku_combined_cmdline_args | join(' ') }}"
+    _teku_env_opts_internal: "{{ teku_combined_env_opts }}"
+
+- name: combined | generate config file 
+  ansible.builtin.template:
+    src: "{{ teku_config_template }}"
+    dest: "{{ teku_config_file }}"
+    owner: "{{ teku_user }}"
+    group: "{{ teku_group }}"
+  become: true
+  register: config_toml
+
+- name: combined | sanitize beacon cmdline_args
+  ansible.builtin.set_fact:
+    _teku_cmdline_args_internal: "{{ _teku_cmdline_args_internal | replace('\n', '') | replace('\"', '')}}"
+  when: teku_combined_cmdline_args != []
+
+- name: combined | show cmdline_args
+  ansible.builtin.debug:
+    msg: "{{ _teku_cmdline_args_internal }}"
+  when: teku_combined_cmdline_args != []
+
+- name: combined | trigger a systemd restart at the end if config_file is changed
+  ansible.builtin.set_fact:
+    teku_combined_state_updates: "{{ teku_combined_state_updates + ['teku.config_toml'] }}"
+  when: config_toml is changed
+
+- name: combined | create teku systemd service
+  ansible.builtin.template:
+    src: "{{ teku_systemd_template }}"
+    dest: "{{ teku_service_file }}"
+    owner: "root"
+    group: "root"
+  become: true
+  when: teku_managed_service|bool
+  register: systemd_file
+
+- name: combined | trigger a systemd restart at the end if systemd_file is changed
+  set_fact:
+    teku_combined_state_updates: "{{ teku_combined_state_updates + ['teku.systemd_file'] }}"
+  when: systemd_file is changed
+
+- name: combined | Reload systemd to reread configs
+  ansible.builtin.systemd:
+    daemon_reload: yes
+  become: true
+  when: systemd_file is changed
+
+- name: combined | enable Teku service
+  ansible.builtin.systemd:
+    name: "{{ teku_service_name }}.service"
+    state: "{{ teku_systemd_state }}"
+    enabled: "{{ false if teku_systemd_state == 'stopped' else true }}"
+  become: true
+  register: start_teku_combined
+  when: teku_managed_service|bool
+
+- name: combined | restart Teku service
+  ansible.builtin.systemd:
+    name: "{{ teku_service_name }}.service"
+    state: "{{ teku_systemd_state }}"
+  become: true
+  when:
+    - not start_teku_combined.changed
+    - teku_state_updates|length > 0
+    - teku_managed_service|bool

@@ -1,0 +1,21 @@
+[Unit]
+Description={{teku_service_name}}
+After=syslog.target network.target {% if teku_depends_on_web3signer %}{{ teku_depends_on_web3signer_service_name }}{% endif %}
+
+[Service]
+User={{ teku_user }}
+Group={{ teku_group }}
+Environment=HOME=/home/{{ teku_user }}
+Environment='TEKU_OPTS={{ _teku_env_opts_internal|map('to_json')|join(' ') }}'
+{% if teku_log4j_config_file is defined %}
+Environment=LOG4J_CONFIGURATION_FILE={{ teku_log4j_config_file }}
+{% endif %}
+Type=simple
+ExecStart=/bin/sh -c "{{ teku_current_dir }}/bin/teku -c {{ teku_config_file }} {{ teku_sub_command }} {{ _teku_cmdline_args_internal }} >> {{ teku_log_file }} 2>&1"
+SuccessExitStatus=143
+Restart=on-failure
+RestartSec=10s
+WorkingDirectory={{ teku_current_dir }}
+
+[Install]
+WantedBy=multi-user.target

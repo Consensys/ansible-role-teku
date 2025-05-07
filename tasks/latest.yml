@@ -1,4 +1,4 @@
-- name: Get the latest version from GitHub repository
+- name: latest | Get the latest version from GitHub repository
   ansible.builtin.uri:
     url: "https://api.github.com/repos/consensys/teku/releases/latest"
     method: GET
@@ -6,16 +6,16 @@
     return_content: true
   register: _latest_release_response
 
-- name: Set the version variable
+- name: latest | Set the version variable
   ansible.builtin.set_fact:
     _teku_version: "{{ _latest_release_response.json.tag_name }}"
 
-- name: Validate the discovered Teku version
+- name: latest | Validate the discovered Teku version
   ansible.builtin.assert:
     that: _teku_version is search("^[0-9]+\.[0-9]+\.[0-9]+$")
     fail_msg: "Discovered version [{{ _teku_version }}] is not valid"
   
-- name: Information
-  debug:
+- name: latest | Information
+  ansible.builtin.debug:
     msg: "Latest Teku version is {{ _teku_version }}"
 

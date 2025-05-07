@@ -1,60 +1,71 @@
 ---
+# Teku has the following operating modes:
+
+# 1. Combined = beacon + validator as a single unified process. This is generally used for dev / limited resources 
+#       teku_combined_enabled = true (default)
+
+# 2. Beacon + Validator = beacon + validator, each as a separate processes on the same machine. If you wish to run them seperately on different machines, use option 3 & 4 below
+#       teku_combined_enabled = false
+#       teku_beacon_enabled = true
+#       teku_valdiator_enabled = true
+
+# 3. Beacon = only the beacon client 
+#       teku_combined_enabled = false
+#       teku_beacon_enabled = true
+
+# 4. Validator = only the validator client
+#       teku_combined_enabled = false
+#       teku_valdiator_enabled = true
+
+teku_combined_enabled: true
+teku_beacon_enabled: false
+teku_validator_enabled: false
+
 # User and group
 teku_user: teku
 teku_group: "{{ teku_user }}"
-
 # Internal teku version set to external teku version
 # This is required so that when latest version is discovered it can be updated.
 # Parameters provided via command line cannot be override with set_fact
 _teku_version: "{{ teku_version }}"
-
 # Version to install
 teku_download_url: "https://artifacts.consensys.net/public/teku/raw/names/teku.tar.gz/versions/{{ _teku_version }}/teku-{{ _teku_version }}.tar.gz"
-
 # Directory paths
 teku_base_dir: "/opt/teku"
 teku_install_dir: "{{ teku_base_dir }}/teku-{{ _teku_version }}"
 teku_current_dir: "{{ teku_base_dir }}/current"
 teku_data_dir: "{{ teku_base_dir }}/data"
-teku_data_beacon_dir: "{{ teku_data_dir }}/dir"
+teku_validator_data_dir: "{{ teku_base_dir }}/validatorData"
 teku_config_dir: "/etc/teku"
 teku_log_dir: "/var/log/teku"
 teku_output_transition_dir: "/tmp/teku"
 teku_node_private_key_file: ""
-teku_config_template: "teku.yml.j2"
-besu_profile_file: "/etc/profile.d/teku-path.sh"
 teku_version_info_file: "{{ teku_config_dir }}/clc_version"
-
+teku_validator_version_info_file: "{{ teku_config_dir }}/clc_validator_version"
 # Logging
 teku_log_level: INFO
 teku_log_color_enabled: False
 teku_log_destination: "DEFAULT_BOTH"
-teku_log_filename: "{{ teku_log_dir }}/teku.log"
-teku_log_filename_pattern: "teku_%d{yyyy-MM-dd}.log"
 teku_log_include_events_enabled: False
-
 # Managed service config
+teku_sub_command: ""
 teku_managed_service: true
 teku_systemd_state: restarted
-teku_systemd_template: teku.service.j2
 teku_systemd_dir: /etc/systemd/system
-teku_launchd_template: tech.pegasyseng.teku.plist.j2
-teku_launchd_dir: /Library/LaunchAgents
 teku_depends_on_web3signer: False
 teku_depends_on_web3signer_service_name: web3signer.service
 
+#######################################
 # Teku config
 teku_network: minimal
 teku_initial_state: ""
 teku_host_ip: ""
-
 #node
 teku_p2p_enabled: "True"
 teku_p2p_interface: 0.0.0.0
 teku_p2p_port: 9000
 teku_p2p_advertised_port: 9000
 teku_p2p_discovery_enabled: "True"
-
 #interop
 teku_interop_genesis_time: 0
 teku_interop_owned_validator_start_index: 0
@@ -69,67 +80,38 @@ teku_deposit_input_file: "" #"validator_test_data.json"
 teku_deposit_number_validators: 64
 teku_deposit_contract_address: "0x"
 teku_deposit_eth1_endpoint: ""
-
 teku_metrics_enabled: "True"
 teku_metrics_interface: 0.0.0.0
 teku_metrics_host_allowlist: ["*"]
 teku_metrics_port: 8008
+teku_validator_metrics_port: 8009
 teku_metrics_categories: []
-
-teku_data_path: "/data"
 teku_data_storage_mode: "prune"
-
 teku_beacon_rest_api_port: 5051
 teku_beacon_rest_api_docs_enabled: "False"
 teku_beacon_rest_api_enabled: "True"
 teku_beacon_rest_api_interface: "127.0.0.1"
 teku_beacon_rest_api_host_allowlist: ["*"]
+teku_beacon_liveness_tracking: False
 
-teku_cmdline_args: ""
-# Using an internal variable for setting the configuration. This avoids circular reference.
-teku_cmdline_args_internal: "{{ teku_cmdline_args }}"
-teku_cmdline_args_beacon: "{{ teku_cmdline_args }}"
-teku_cmdline_args_validator: "{{ teku_cmdline_args }}"
-teku_env_opts: ""
-# Using an internal variable for setting the configuration. This avoids circular reference.
-teku_env_opts_internal: "{{ teku_env_opts }}"
-teku_env_opts_beacon: "{{ teku_env_opts }}"
-teku_env_opts_validator: "{{ teku_env_opts }}"
+# overrides to pass in - unless specified vars refer to combined mode
+_teku_cmdline_args_internal: ""
+teku_combined_cmdline_args: []
+teku_beacon_cmdline_args: []
+teku_validator_cmdline_args: []
 
-teku_validator_key_files: []
-teku_validator_key_password_files: []
+_teku_env_opts_internal: ""
+teku_combined_env_opts: []
+teku_beacon_env_opts: []
+teku_validator_env_opts: []
+
 
 # internal state to maintain idempotency
-teku_state_updates: []
-teku_state_updates_validator: []
-teku_state_updates_beacon: []
+teku_combined_state_updates: []
+teku_beacon_state_updates: []
+teku_validator_state_updates: []
 
-# Defaults for monolith service for backward compatibility
-teku_sub_command: ""
-teku_log_file: "{{ teku_log_dir }}/teku.log"
-teku_config_file: "{{ teku_config_dir }}/teku.yml"
-
-# determine whether to run as standalone validator client. Default is not to run standalone validator
-teku_beacon_enabled: True
-teku_standalone_validator: "{{ not teku_beacon_enabled | bool }}"
-
-# Configuration for monolith teku client
-teku_monolith_service_name: "teku"
-teku_monolith_service_file: "{{ teku_systemd_dir }}/teku.service"
-teku_monolith_log_file: "{{ teku_log_dir }}/teku.log"
-teku_monolith_config_file: "{{ teku_config_dir }}/teku.yml"
-
-# Configuration for standalone validator client
-teku_validator_service_name: "teku-validator"
-teku_validator_service_file: "{{ teku_systemd_dir }}/teku-validator.service"
-teku_validator_log_file: "{{ teku_log_dir }}/teku-validator.log"
-teku_validator_config_file: "{{ teku_config_dir }}/teku-validator.yml"
-teku_validator_metrics_port: "8009"
-
-# Configuration for standalone beacon client
-teku_beacon_service_name: "teku"
-teku_beacon_service_file: "{{ teku_systemd_dir }}/teku.service"
-teku_beacon_log_file: "{{ teku_log_dir }}/teku.log"
-teku_beacon_config_file: "{{ teku_config_dir }}/teku.yml"
-teku_beacon_metrics_port: "8008"
-teku_beacon_liveness_tracking: False
+##############################################################################
+# Validator settings
+teku_validator_keys: []
+teku_beacon_node_api_endpoints: []

@@ -1,48 +1,39 @@
 ---
-- name: Ensure Teku group exists
-  group:
+- name: install | Ensure Teku group exists
+  ansible.builtin.group:
     name: "{{ teku_group }}"
     state: present
   become: true
 
-- name: Create Teku user
-  user:
+- name: install | Create Teku user
+  ansible.builtin.user:
     comment: Teku client user
     name: "{{ teku_user }}"
     group: "{{ teku_group }}"
   become: true
 
-- name: Create base directory
-  file:
-    path: "{{ teku_base_dir }}"
+- name: install | Create directories
+  ansible.builtin.file:
+    path: "{{ item }}"
     state: directory
     owner: "{{ teku_user }}"
     group: "{{ teku_group }}"
+  loop:
+    - "{{ teku_base_dir }}"
+    - "{{ teku_install_dir }}"
+    - "{{ teku_config_dir }}"
+    - "{{ teku_log_dir }}"
+    - "{{ teku_data_dir }}"
+    - "{{ teku_validator_data_dir }}"
   become: true
 
-- name: Create install directory
-  file:
-    path: "{{ teku_install_dir }}"
-    state: directory
-    owner: "{{ teku_user }}"
-    group: "{{ teku_group }}"
-  become: true
-
-- name: Create log directory
-  file:
-    path: "{{ teku_log_dir }}"
-    state: directory
-    owner: "{{ teku_user }}"
-    group: "{{ teku_group }}"
-  become: true
-
-- name: Setup logrotate
-  template:
+- name: install | Setup logrotate
+  ansible.builtin.template:
     src: "logrotate/teku"
     dest: "/etc/logrotate.d/teku"
   become: true
 
-- name: Download Teku binary for Teku version {{ _teku_version }}
+- name: install | Download Teku binary for Teku version {{ _teku_version }}
   ansible.builtin.uri:
     url: "{{ teku_download_url }}"
     dest: "{{ teku_base_dir }}"
@@ -51,8 +42,8 @@
   register: teku_binary_download
   become: true
 
-- name: Extract Teku source to install directory
-  unarchive:
+- name: install | Extract Teku source to install directory
+  ansible.builtin.unarchive:
     src: "{{ teku_binary_download.path }}"
     dest: "{{ teku_install_dir }}"
     remote_src: true
@@ -65,17 +56,19 @@
   become: true
   register: extract_src
 
-- name: Create a symlink to current
-  file:
+- name: install | Create a symlink to current
+  ansible.builtin.file:
     src: "{{ teku_install_dir }}/"
     dest: "{{ teku_current_dir }}"
     state: link
   register: create_symlink
   become: true
 
-- name: Set updated optionally to trigger a systemd restart at the end
-  set_fact:
-    teku_state_updates: "{{ teku_state_updates + ['teku.install_dir'] }}"
-    teku_state_updates_validator: "{{ teku_state_updates_validator + ['teku.install_dir'] }}"
-    teku_state_updates_beacon: "{{ teku_state_updates_beacon + ['teku.install_dir'] }}"
-  when: "extract_src is changed or create_symlink is changed"
+- name: install | Set updated optionally to trigger a systemd restart at the end
+  ansible.builtin.set_fact:
+    teku_combined_state_updates: "{{ teku_combined_state_updates + ['teku.install_dir'] }}"
+    teku_validator_state_updates: "{{ teku_validator_state_updates + ['teku.install_dir'] }}"
+    teku_beacon_state_updates: "{{ teku_beacon_state_updates + ['teku.install_dir'] }}"
+  when: >
+    extract_src is changed or 
+    create_symlink is changed

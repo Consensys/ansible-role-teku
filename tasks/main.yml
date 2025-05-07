@@ -1,5 +1,5 @@
 ---
-- name: Ensure we have sane configuration
+- name: main | Ensure we have sane configuration
   block:
     - name: Check teku version supplied
       ansible.builtin.fail:
@@ -7,38 +7,40 @@
       when: teku_version is not defined
 
 # Retrive latest version when teku_version == 'latest'
-- name: Include task to retrieve latest version
-  ansible.builtin.include_tasks: "latest.yml"
+- name: main | Include task to retrieve latest version
+  ansible.builtin.include_tasks: latest.yml
   when: teku_version == 'latest'
 
-- name: Include OS and distribution specific variables
-  include_vars: "{{ item }}"
+- name:  main | Include OS and distribution specific variables
+  ansible.builtin.include_vars: "{{ item }}"
   with_first_found:
     - files:
         - "{{ ansible_distribution|lower }}.yml"
         - "{{ ansible_os_family|lower }}.yml"
       skip: true
 
-- name: Install teku
-  include_tasks: "install.yml"
-
-- name: Run OS specific installation tasks
-  include_tasks: "{{ item }}"
-  with_first_found:
-    - files:
-        - "{{ ansible_distribution|lower }}/install.yml"
-        - "{{ ansible_os_family|lower }}/install.yml"
-      skip: true
-
-- name: Get IP address to bind to if not provided
-  include_tasks: "network.yml"
+- name: main | Get IP address to bind to if not provided
+  ansible.builtin.include_tasks: network.yml
   when: not teku_host_ip
 
-- name: Create config
-  include_tasks: "config.yml"
+- name: main | Install teku
+  ansible.builtin.include_tasks: install.yml
 
-- name: Create teku service
-  include_tasks: "service.yml"
+- name: main | Teku combined
+  ansible.builtin.include_tasks: combined.yml
+  when: teku_combined_enabled 
+
+- name: main | Teku beacon
+  ansible.builtin.include_tasks: beacon.yml
+  when: > 
+    not teku_combined_enabled|bool and
+    teku_beacon_enabled|bool
+
+- name: main | Teku validator
+  ansible.builtin.include_tasks: validator.yml
+  when: > 
+    not teku_combined_enabled|bool and
+    teku_validator_enabled|bool
 
 - name: Set version info on a local file
-  include_tasks: "tags.yml"
+  ansible.builtin.include_tasks: "tags.yml"
