@@ -1,0 +1,93 @@
+---
+- name: validator | set vars for the validator operating mode
+  ansible.builtin.set_fact:
+    teku_service_name: "teku-validator"
+
+- name: validator | set dependent vars for the validator operating mode
+  ansible.builtin.set_fact:
+    teku_log_file: "{{ teku_log_dir }}/{{ teku_service_name }}.log"
+    teku_log_filename_pattern: "{{ teku_service_name }}_%d{yyyy-MM-dd}.log"
+    teku_config_file: "{{ teku_config_dir }}/{{ teku_service_name }}.yml"
+    teku_config_template: "config/{{ teku_service_name }}.yml.j2"
+    teku_service_file: "{{ teku_systemd_dir }}/{{ teku_service_name }}.service"
+    teku_systemd_template: "service/teku.service.j2"
+    _teku_cmdline_args_internal: "{{ teku_validator_cmdline_args | join(' ') }}"
+    _teku_env_opts_internal: "{{ teku_validator_env_opts }}"
+    teku_sub_command: "validator-client"
+    teku_validator_data_dir: "{{teku_data_dir}}"
+
+- name: validator | generate config file 
+  ansible.builtin.template:
+    src: "{{ teku_config_template }}"
+    dest: "{{ teku_config_file }}"
+    owner: "{{ teku_user }}"
+    group: "{{ teku_group }}"
+  become: true
+  register: config_toml
+  vars:
+    teku_validator_data_dir: "{{teku_data_dir}}"
+
+- name: validator | trigger a systemd restart at the end if config_file is changed
+  ansible.builtin.set_fact:
+    teku_validator_state_updates: "{{ teku_validator_state_updates + ['teku.config_toml'] }}"
+  when: config_toml is changed
+
+- name: validator | sanitize beacon cmdline_args
+  ansible.builtin.set_fact:
+    _teku_cmdline_args_internal: "{{ _teku_cmdline_args_internal | replace('\n', '') | replace('\"', '')}}"
+  when: teku_validator_cmdline_args != []
+
+- name: validator | show cmdline_args
+  ansible.builtin.debug:
+    msg: "{{ _teku_cmdline_args_internal }}"
+  when: teku_validator_cmdline_args != []
+
+- name: validator | create teku systemd service
+  ansible.builtin.template:
+    src: "{{ teku_systemd_template }}"
+    dest: "{{ teku_service_file }}"
+    owner: "root"
+    group: "root"
+  become: true
+  when: teku_managed_service|bool
+  register: systemd_file
+
+- name: validator | create teku systemd service
+  ansible.builtin.template:
+    src: "{{ teku_systemd_template }}"
+    dest: "{{ teku_service_file }}"
+    owner: "root"
+    group: "root"
+  become: true
+  when: teku_managed_service|bool
+  register: systemd_file
+
+- name: validator | trigger a systemd restart at the end if systemd_file is changed
+  ansible.builtin.set_fact:
+    teku_validator_state_updates: "{{ teku_validator_state_updates + ['teku.systemd_file'] }}"
+  when: systemd_file is changed
+
+- name: validator | Reload systemd to reread configs
+  ansible.builtin.systemd:
+    daemon_reload: yes
+  become: true
+  when: systemd_file is changed
+
+- name: validator | enable Teku service
+  ansible.builtin.systemd:
+    name: "{{ teku_service_name }}.service"
+    state: "{{ teku_systemd_state }}"
+    enabled: "{{ false if teku_systemd_state == 'stopped' else true }}"
+  become: true
+  register: start_teku_validator
+  when: teku_managed_service|bool
+
+- name: validator | restart Teku service
+  ansible.builtin.systemd:
+    name: "{{ teku_service_name }}.service"
+    state: "{{ teku_systemd_state }}"
+  become: true
+  when:
+    - not start_teku_validator.changed
+    - teku_validator_state_updates|length > 0
+    - teku_managed_service|bool

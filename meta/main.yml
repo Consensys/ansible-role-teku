@@ -22,9 +22,6 @@ galaxy_info:
         - 39
         - 38
         - 37
-    - name: MacOSX
-      versions:
-        - all
   galaxy_tags:
     - teku
     - blockchain
