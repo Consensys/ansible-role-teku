@@ -12,7 +12,7 @@
     teku_service_file: "{{ teku_systemd_dir }}/{{ teku_service_name }}.service"
     teku_systemd_template: "service/teku.service.j2"
     _teku_cmdline_args_internal: "{{ teku_beacon_cmdline_args | join(' ') }}"
-    _teku_env_opts_internal: "{{ teku_beacon_env_opts }}"
+    _teku_opts_internal: "{{ teku_beacon_opts }}"
 
 - name: beacon | generate config file 
   ansible.builtin.template:

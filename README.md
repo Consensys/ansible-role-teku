@@ -32,16 +32,16 @@ The following have switched types from string to list
 teku_combined_cmdline_args`: []
 teku_beacon_cmdline_args: []
 teku_validator_cmdline_args: []
-teku_combined_env_opts: []
-teku_beacon_env_opts: []
-teku_validator_env_opts: []
+teku_combined_opts: []
+teku_beacon_opts: []
+teku_validator_opts: []
 ```
 
 The following vars have been removed:
 ```bash
 teku_data_path                            # Please use `teku_data_dir`
 teku_combined_cmdline_args_internal
-teku_env_opts_internal
+teku_opts_internal
 teku_validator_key_files & teku_validator_key_password_files. # Please use `teku_validator_keys`
 ```
 
@@ -50,9 +50,9 @@ The following vars have been renamed:
 teku_cmdline_args:""           -> teku_combined_cmdline_args:[]
 teku_cmdline_args_beacon:""    -> teku_beacon_cmdline_args:[]
 teku_cmdline_args_validator:"" -> teku_validator_cmdline_args:[]
-teku_env_opts:""           -> teku_combined_env_opts:[]
-teku_env_opts_beacon:""    -> teku_beacon_env_opts:[]
-teku_env_opts_validator:"" -> teku_validator_env_opts:[]
+teku_opts:""           -> teku_combined_env_opts:[]
+teku_opts_beacon:""    -> teku_beacon_opts:[]
+teku_opts_validator:"" -> teku_validator_opts:[]
 ```
 
 
@@ -158,9 +158,9 @@ All variables which can be overridden are stored in [defaults/main.yml](defaults
 | `teku_combined_cmdline_args`                        | []       |  Only applicable in combined or monolith mode                                       |
 | `teku_combined_cmdline_args_beacon`                 | []       | Only applicable in single process standalone mode. Allows setting beacon specific values          |
 | `teku_combined_cmdline_args_validator`              | []       | Only applicable in single process standalone mode. Allows setting validator specific values       |
-| `teku_env_opts`                            | []       |                                         |
-| `teku_beacon_env_opts`                     | []       | Only applicable in single process standalone mode. Allows setting beacon specific values          |
-| `teku_validator_env_opts`                  | []       | Only applicable in single process standalone mode. Allows setting validator specific values       |
+| `teku_opts`                            | []       |                                         |
+| `teku_beacon_opts`                     | []       | Only applicable in single process standalone mode. Allows setting beacon specific values          |
+| `teku_validator_opts`                  | []       | Only applicable in single process standalone mode. Allows setting validator specific values       |
 
 List of variables which are not defined with default values in ansible role. However if these variables set via command line those will configured in teku configuration file
 
