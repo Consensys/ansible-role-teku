@@ -13,6 +13,11 @@ initial-state: "{{teku_initial_state}}"
 ws-checkpoint: "{{teku_ws_checkpoint}}"
 {% endif %}
 
+# Although this is mostly for validators, if a BN has validators connected, it still needs to be set
+{% if teku_validators_proposer_default_fee_recipient is defined and teku_validators_proposer_default_fee_recipient != "" %}
+validators-proposer-default-fee-recipient: "{{teku_validators_proposer_default_fee_recipient}}"
+{% endif %}
+
 ######################
 # logging
 ######################
