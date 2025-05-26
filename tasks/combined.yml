@@ -5,8 +5,7 @@
 
 - name: combined | set dependent vars for the combined operating mode
   ansible.builtin.set_fact:
-    teku_log_file: "{{ teku_log_dir }}/{{ teku_service_name }}_{{ now(utc=true,fmt='%Y-%m-%d') }}.log"
-    teku_log_filename_pattern: "{{ teku_service_name }}_%d{yyyy-MM-dd}.log"
+    teku_log_file: "{{ teku_log_dir }}/{{ teku_service_name }}.log"
     teku_config_file: "{{ teku_config_dir }}/{{ teku_service_name }}.yml"
     teku_config_template: "config/{{ teku_service_name }}.yml.j2"
     teku_service_file: "{{ teku_systemd_dir }}/{{ teku_service_name }}.service"
@@ -14,7 +13,7 @@
     _teku_cmdline_args_internal: "{{ teku_combined_cmdline_args | join(' ') }}"
     _teku_opts_internal: "{{ teku_combined_opts }}"
 
-- name: combined | generate config file 
+- name: combined | generate config file
   ansible.builtin.template:
     src: "{{ teku_config_template }}"
     dest: "{{ teku_config_file }}"
@@ -25,7 +24,7 @@
 
 - name: combined | sanitize beacon cmdline_args
   ansible.builtin.set_fact:
-    _teku_cmdline_args_internal: "{{ _teku_cmdline_args_internal | replace('\n', '') | replace('\"', '')}}"
+    _teku_cmdline_args_internal: "{{ _teku_cmdline_args_internal | replace('\n', '') | replace('\"', '') }}"
   when: teku_combined_cmdline_args != []
 
 - name: combined | show cmdline_args

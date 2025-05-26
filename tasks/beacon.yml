@@ -6,7 +6,6 @@
 - name: beacon | set dependent vars for the beacon operating mode
   ansible.builtin.set_fact:
     teku_log_file: "{{ teku_log_dir }}/{{ teku_service_name }}.log"
-    teku_log_filename_pattern: "{{ teku_service_name }}_%d{yyyy-MM-dd}.log"
     teku_config_file: "{{ teku_config_dir }}/{{ teku_service_name }}.yml"
     teku_config_template: "config/{{ teku_service_name }}.yml.j2"
     teku_service_file: "{{ teku_systemd_dir }}/{{ teku_service_name }}.service"
@@ -14,7 +13,7 @@
     _teku_cmdline_args_internal: "{{ teku_beacon_cmdline_args | join(' ') }}"
     _teku_opts_internal: "{{ teku_beacon_opts }}"
 
-- name: beacon | generate config file 
+- name: beacon | generate config file
   ansible.builtin.template:
     src: "{{ teku_config_template }}"
     dest: "{{ teku_config_file }}"
@@ -30,7 +29,7 @@
 
 - name: beacon | sanitize beacon cmdline_args
   ansible.builtin.set_fact:
-    _teku_cmdline_args_internal: "{{ _teku_cmdline_args_internal | replace('\n', '') | replace('\"', '')}}"
+    _teku_cmdline_args_internal: "{{ _teku_cmdline_args_internal | replace('\n', '') | replace('\"', '') }}"
   when: teku_beacon_cmdline_args != []
 
 - name: beacon | show cmdline_args
