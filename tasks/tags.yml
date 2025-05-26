@@ -1,18 +1,18 @@
 - name: tags | Set the version on a local file so it can be used by other automation
-  ansible.builtin.copy: 
+  ansible.builtin.copy:
     content: "{{ _teku_version }}"
     dest: "{{ teku_version_info_file }}"
     owner: "{{ teku_user }}"
     group: "{{ teku_group }}"
-    mode: 0644    
+    mode: 0644
   become: true
 
 - name: tags | Set the teku validator version on a local file so it can be used by other automation
-  ansible.builtin.copy: 
+  ansible.builtin.copy:
     content: "{{ _teku_version }}"
     dest: "{{ teku_validator_version_info_file }}"
     owner: "{{ teku_user }}"
     group: "{{ teku_group }}"
-    mode: 0644    
+    mode: 0644
   become: true
-  when: teku_validator_enabled 
+  when: teku_validator_enabled

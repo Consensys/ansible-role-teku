@@ -28,17 +28,17 @@
 
 - name: main | Teku combined
   ansible.builtin.include_tasks: combined.yml
-  when: teku_combined_enabled 
+  when: teku_combined_enabled
 
 - name: main | Teku beacon
   ansible.builtin.include_tasks: beacon.yml
-  when: > 
+  when: >
     not teku_combined_enabled|bool and
     teku_beacon_enabled|bool
 
 - name: main | Teku validator
   ansible.builtin.include_tasks: validator.yml
-  when: > 
+  when: >
     not teku_combined_enabled|bool and
     teku_validator_enabled|bool
 

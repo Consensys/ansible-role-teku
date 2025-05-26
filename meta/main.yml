@@ -1,6 +1,6 @@
 ---
 galaxy_info:
-  author: PegaSysEng 
+  author: Consensys
   role_name: teku
   description: Teku is an open-source java enterprise ethereum 2 client
   company: PegaSysEng

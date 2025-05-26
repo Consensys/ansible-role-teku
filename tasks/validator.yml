@@ -14,7 +14,7 @@
     _teku_opts_internal: "{{ teku_validator_opts }}"
     teku_sub_command: "validator-client"
 
-- name: validator | generate config file 
+- name: validator | generate config file
   ansible.builtin.template:
     src: "{{ teku_config_template }}"
     dest: "{{ teku_config_file }}"
@@ -30,7 +30,7 @@
 
 - name: validator | sanitize beacon cmdline_args
   ansible.builtin.set_fact:
-    _teku_cmdline_args_internal: "{{ _teku_cmdline_args_internal | replace('\n', '') | replace('\"', '')}}"
+    _teku_cmdline_args_internal: "{{ _teku_cmdline_args_internal | replace('\n', '') | replace('\"', '') }}"
   when: teku_validator_cmdline_args != []
 
 - name: validator | show cmdline_args

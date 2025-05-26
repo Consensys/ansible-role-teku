@@ -70,5 +70,5 @@
     teku_validator_state_updates: "{{ teku_validator_state_updates + ['teku.install_dir'] }}"
     teku_beacon_state_updates: "{{ teku_beacon_state_updates + ['teku.install_dir'] }}"
   when: >
-    extract_src is changed or 
+    extract_src is changed or
     create_symlink is changed

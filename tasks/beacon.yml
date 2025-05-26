@@ -13,7 +13,7 @@
     _teku_cmdline_args_internal: "{{ teku_beacon_cmdline_args | join(' ') }}"
     _teku_opts_internal: "{{ teku_beacon_opts }}"
 
-- name: beacon | generate config file 
+- name: beacon | generate config file
   ansible.builtin.template:
     src: "{{ teku_config_template }}"
     dest: "{{ teku_config_file }}"
@@ -29,7 +29,7 @@
 
 - name: beacon | sanitize beacon cmdline_args
   ansible.builtin.set_fact:
-    _teku_cmdline_args_internal: "{{ _teku_cmdline_args_internal | replace('\n', '') | replace('\"', '')}}"
+    _teku_cmdline_args_internal: "{{ _teku_cmdline_args_internal | replace('\n', '') | replace('\"', '') }}"
   when: teku_beacon_cmdline_args != []
 
 - name: beacon | show cmdline_args
