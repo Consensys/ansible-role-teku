@@ -6,7 +6,12 @@
 # network
 network: "{{teku_network}}"
 
-# can also use this in place of `genesis-state`
+# eg for a testnet
+# for mainnet, sepolia etc you generally don't use `genesis-state`. Instead you use `ws-checkpoint`
+{% if teku_genesis_state != ""  %}
+genesis-state: "{{teku_genesis_state}}"
+{% endif %}
+
 {% if teku_initial_state != ""  %}
 initial-state: "{{teku_initial_state}}"
 {% endif %}
@@ -58,6 +63,7 @@ p2p-advertised-ip: "{{teku_host_ip}}"
 {% endif %}
 p2p-advertised-port: {{teku_p2p_advertised_port}}
 p2p-discovery-enabled: {{teku_p2p_discovery_enabled}}
+p2p-discovery-site-local-addresses-enabled: {{teku_p2p_discovery_site_local_addresses_enabled}}
 {% if teku_node_private_key_file != "" %}
 # private_key
 p2p-private-key-file: "{{teku_node_private_key_file}}"
@@ -115,6 +121,7 @@ data-beacon-path: "{{teku_data_beacon_path}}"
 data-validator-path: "{{teku_data_validator_path}}"
 {% endif %}
 data-storage-mode: "{{teku_data_storage_mode}}"
+data-storage-non-canonical-blocks-enabled: {{teku_data_storage_non_canonical_blocks_enabled}}
 {% if teku_data_storage_archive_frequency is defined and teku_data_storage_archive_frequency != '' %}
 data-storage-archive-frequency: {{teku_data_storage_archive_frequency}}
 {% endif %}
