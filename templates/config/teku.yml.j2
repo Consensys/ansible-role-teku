@@ -6,6 +6,7 @@
 # network
 network: "{{teku_network}}"
 
+# can also use this in place of `genesis-state`
 {% if teku_initial_state != ""  %}
 initial-state: "{{teku_initial_state}}"
 {% endif %}
@@ -61,8 +62,8 @@ p2p-discovery-enabled: {{teku_p2p_discovery_enabled}}
 # private_key
 p2p-private-key-file: "{{teku_node_private_key_file}}"
 {% endif %}
-{% if teku_p2p_discovery_bootnodes is defined and teku_p2p_discovery_bootnodes != '' %}
-p2p-discovery-bootnodes: {{teku_p2p_discovery_bootnodes}}
+{% if teku_p2p_discovery_bootnodes is defined and teku_p2p_discovery_bootnodes|length > 0%}
+p2p-discovery-bootnodes: [{{teku_p2p_discovery_bootnodes|map('to_json')|join(',')}}]
 {% endif %}
 {% if teku_p2p_peer_lower_bound is defined and teku_p2p_peer_lower_bound != '' %}
 p2p-peer-lower-bound: {{teku_p2p_peer_lower_bound}}
