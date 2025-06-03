@@ -5,6 +5,12 @@
 # network
 network: "{{teku_network}}"
 
+# eg for a testnet
+# for mainnet, sepolia etc you generally don't use `genesis-state`. Instead you use `ws-checkpoint`
+{% if teku_genesis_state != ""  %}
+genesis-state: "{{teku_genesis_state}}"
+{% endif %}
+
 {% if teku_initial_state != ""  %}
 initial-state: "{{teku_initial_state}}"
 {% endif %}
@@ -12,7 +18,6 @@ initial-state: "{{teku_initial_state}}"
 {% if teku_ws_checkpoint is defined and teku_ws_checkpoint != '' %}
 ws-checkpoint: "{{teku_ws_checkpoint}}"
 {% endif %}
-
 # Although this is mostly for validators, if a BN has validators connected, it still needs to be set
 {% if teku_validators_proposer_default_fee_recipient is defined and teku_validators_proposer_default_fee_recipient != "" %}
 validators-proposer-default-fee-recipient: "{{teku_validators_proposer_default_fee_recipient}}"
@@ -61,12 +66,13 @@ p2p-advertised-ip: "{{teku_host_ip}}"
 {% endif %}
 p2p-advertised-port: {{teku_p2p_advertised_port}}
 p2p-discovery-enabled: {{teku_p2p_discovery_enabled}}
+p2p-discovery-site-local-addresses-enabled: {{teku_p2p_discovery_site_local_addresses_enabled}}
 {% if teku_node_private_key_file != "" %}
 # private_key
 p2p-private-key-file: "{{teku_node_private_key_file}}"
 {% endif %}
-{% if teku_p2p_discovery_bootnodes is defined and teku_p2p_discovery_bootnodes != '' %}
-p2p-discovery-bootnodes: {{teku_p2p_discovery_bootnodes}}
+{% if teku_p2p_discovery_bootnodes is defined and teku_p2p_discovery_bootnodes|length > 0%}
+p2p-discovery-bootnodes: [{{teku_p2p_discovery_bootnodes|map('to_json')|join(',')}}]
 {% endif %}
 {% if teku_p2p_peer_lower_bound is defined and teku_p2p_peer_lower_bound != '' %}
 p2p-peer-lower-bound: {{teku_p2p_peer_lower_bound}}
@@ -118,6 +124,7 @@ data-beacon-path: "{{teku_data_beacon_path}}"
 data-validator-path: "{{teku_data_validator_path}}"
 {% endif %}
 data-storage-mode: "{{teku_data_storage_mode}}"
+data-storage-non-canonical-blocks-enabled: {{teku_data_storage_non_canonical_blocks_enabled}}
 {% if teku_data_storage_archive_frequency is defined and teku_data_storage_archive_frequency != '' %}
 data-storage-archive-frequency: {{teku_data_storage_archive_frequency}}
 {% endif %}

@@ -58,6 +58,7 @@ teku_depends_on_web3signer_service_name: web3signer.service
 #######################################
 # Teku config
 teku_network: minimal
+teku_genesis_state: ""
 teku_initial_state: ""
 teku_host_ip: ""
 #node
@@ -66,6 +67,7 @@ teku_p2p_interface: 0.0.0.0
 teku_p2p_port: 9000
 teku_p2p_advertised_port: 9000
 teku_p2p_discovery_enabled: "True"
+teku_p2p_discovery_site_local_addresses_enabled: "False"
 #interop
 teku_interop_genesis_time: 0
 teku_interop_owned_validator_start_index: 0
@@ -87,6 +89,7 @@ teku_metrics_port: 8008
 teku_validator_metrics_port: 8009
 teku_metrics_categories: []
 teku_data_storage_mode: "prune"
+teku_data_storage_non_canonical_blocks_enabled: "False"
 teku_beacon_rest_api_port: 5051
 teku_beacon_rest_api_docs_enabled: "False"
 teku_beacon_rest_api_enabled: "True"
