@@ -6,6 +6,9 @@
     group: "{{ teku_group }}"
     mode: 0644
   become: true
+  when: teku_ee_endpoint is defined and teku_ee_endpoint != ""
+  when: (teku_beacon_enabled) or
+        (teku_combined_enabled and (teku_ee_endpoint is defined and teku_ee_endpoint != ""))
 
 - name: tags | Set the teku validator version on a local file so it can be used by other automation
   ansible.builtin.copy:
@@ -15,4 +18,5 @@
     group: "{{ teku_group }}"
     mode: 0644
   become: true
-  when: teku_validator_enabled
+  when: teku_validator_keys is defined and teku_validator_keys != []
+
