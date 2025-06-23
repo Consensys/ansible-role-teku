@@ -25,6 +25,16 @@ Ansible role that will install, configure and runs [Teku](https://github.com/Peg
 
 ### Role Variables:
 
+**BREAKING CHANGES FROM VERSION 25.6.2 and upwards**
+
+Variable `teku_metrics_port` is removed. In it's place we have
+
+```
+teku_beacon_metrics_port: 8008
+teku_validator_metrics_port: 8009
+teku_combined_metrics_port: 8010
+```
+
 **BREAKING CHANGES FROM VERSION 25.5.0 and upwards**
 
 The following have switched types from string to list
@@ -143,8 +153,8 @@ All variables which can be overridden are stored in [defaults/main.yml](defaults
 | `teku_deposit_eth1_endpoint`               | ""       | JSON-RPC URL of Eth1 node               |
 | `teku_metrics_enabled`                     | True     | Set to true to enable the metrics exporter |
 | `teku_metrics_interface`                   | 0.0.0.0  |                                         |
-| `teku_metrics_port`                        | 8008     | Metric port when deployed as combined   |
-| `teku_beacon_metrics_port`                 | 8008     | Beacon service metric port                            |
+| `teku_combined_metrics_port`                        | 8010     | Metric port when deployed as combined   |
+| `teku_beacon_metrics_port`                        | 8008     | Metric port when deployed as beacon single process    |
 | `teku_validator_metrics_port`              | 8009     | Validator service metric port when deployed as validator single process            |
 | `teku_metrics_categories`                  | [] (All categories enabled)                         | Categories for which to track metrics   |
 | `teku_data_path`                           | /data    | Use same folder for both validator and beacon service in single process standalone mode           |

@@ -85,8 +85,10 @@ teku_deposit_eth1_endpoint: ""
 teku_metrics_enabled: "True"
 teku_metrics_interface: 0.0.0.0
 teku_metrics_host_allowlist: ["*"]
-teku_metrics_port: 8008
+
+teku_beacon_metrics_port: 8008
 teku_validator_metrics_port: 8009
+teku_combined_metrics_port: 8010
 teku_metrics_categories: []
 teku_data_storage_mode: "prune"
 teku_data_storage_non_canonical_blocks_enabled: "False"

@@ -41,7 +41,7 @@ log-include-validator-duties-enabled: {{teku_log_validator_duties}}
 ######################
 {% if teku_metrics_enabled|bool == True %}
 metrics-enabled: True
-metrics-port: {{teku_metrics_port}}
+metrics-port: {{teku_combined_metrics_port}}
 metrics-interface : "{{teku_metrics_interface}}"
 {% if teku_metrics_categories != [] %}
 metrics-categories: [{{teku_metrics_categories|map('to_json')|join(',')}}]
