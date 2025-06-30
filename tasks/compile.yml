@@ -1,0 +1,42 @@
+---
+
+- name: Ensure we have sane configuration
+  ansible.builtin.fail:
+    msg: You must set "teku_git_repo" for this role to run when "teku_build_from_source" is enabled
+  when: not (teku_git_repo is defined) or teku_git_repo|length == 0
+
+- name: Check JDK version
+  shell: javac -version | egrep -o '[0-9]+\.[0-9]+\.[0-9]+'
+  register: jdk_version
+  changed_when: false
+  ignore_errors: true
+
+- name: Ensure JDK is installed
+  ansible.builtin.fail:
+    msg: "You must have JDK 21 or later installed. {{ 'No version found.' if jdk_version is failed else 'Found version ' + jdk_version.stdout }}"
+  when: jdk_version.stdout is version('21.0.0', '<')
+
+- name: Clone Teku Sources
+  ansible.builtin.git:
+    repo: "{{ teku_git_repo }}"
+    dest: '/tmp/teku'
+    version: "{{ teku_git_commit }}"
+    recursive: false
+    depth: 1
+
+- name: Build Teku
+  ansible.builtin.command: ./gradlew --no-daemon --parallel clean assemble
+  args:
+    chdir: /tmp/teku
+  changed_when: true
+
+- name: Get Teku Version
+  ansible.builtin.shell: "basename build/distributions/*.tar.gz .tar.gz | sed 's/^teku-//'"
+  args:
+    chdir: /tmp/teku
+  register: teku_version_cmd
+  changed_when: false
+
+- name: Set Teku Version Fact
+  ansible.builtin.set_fact:
+    _teku_version: "{{ teku_version_cmd.stdout }}"

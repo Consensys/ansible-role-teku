@@ -112,65 +112,69 @@ Teku has the following operating modes:
 
 All variables which can be overridden are stored in [defaults/main.yml](defaults/main.yml) file. By and large these variables are configuration options. Please refer to the teku [docs](https://docs.teku.consensys.net/en/latest) for more information
 
-| Name                                       | Default Value                           | Description                                          |
-|--------------------------------------------|-----------------------------------------|-------------------------------------------------------------------------------------------------------------------------------|
-| `teku_combined_enabled`                    | True     | Run beacon and validator (if any) as a single process     |
-| `teku_validator_enabled`                   | False    | Run validator as a single process        |
-| `teku_beacon_enabled`                      | False    | Run beacon as a single process       |
-| `teku_version`                             | ___unset___                             | __REQUIRED__ Version of teku to install and run. All available versions are listed on our teku [releases](https://github.com/PegaSysEng/teku/releases) page. Can use `latest` to discover the latest released version |
-| `teku_user`                                | teku                                    | teku user                               |
-| `teku_group`                               | teku                                    | teku group                              |
+| Name                                       | Default Value                                                                                                                | Description                                          |
+|--------------------------------------------|------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------|
+| `teku_build_from_source` | ___unset___                                                                                                                  |  When set to `true`, Teku is build from git sources. See also `teku_git_repo` and `teku_git_commit` |
+| `teku_version` | ___unset___                                                                                                                  |  __REQUIRED__ if `teku_build_from_source` is false. Version of Teku to install and run. All available versions are listed on our Teku [solutions](https://github.com/Consensys/teku/tags) page |
+| `teku_git_repo` | https://github.com/consensys/teku.git                                                                                        | The URL to use when cloning teku sources. Only necessary when `teku_build_from_source` is `true`. |
+| `teku_git_commit` | master                                                                                                                       | The git commit to use when building Teku from source. Can be a branchname, commit hash, or anything that's legal to be used as an argument to `git checkout`. Only used if `teku_build_from_source` is `true`. |
+| `teku_combined_enabled`                    | True                                                                                                                         | Run beacon and validator (if any) as a single process     |
+| `teku_validator_enabled`                   | False                                                                                                                        | Run validator as a single process        |
+| `teku_beacon_enabled`                      | False                                                                                                                        | Run beacon as a single process       |
+| `teku_version`                             | ___unset___                                                                                                                  | __REQUIRED__ Version of teku to install and run. All available versions are listed on our teku [releases](https://github.com/PegaSysEng/teku/releases) page. Can use `latest` to discover the latest released version |
+| `teku_user`                                | teku                                                                                                                         | teku user                               |
+| `teku_group`                               | teku                                                                                                                         | teku group                              |
 | `teku_download_url`                        | https://artifacts.consensys.net/public/teku/raw/names/teku.tar.gz/versions/{{ teku_version }}/teku-{{ teku_version }}.tar.gz | The download tar.gz file used. You can use this if you need to retrieve teku from a custom location such as an internal repository.                         |
-| `teku_install_dir`                         | /opt/teku                         | Path to install to                      |
-| `teku_config_dir`                          | /etc/teku                         | Path for default configuration          |
-| `teku_data_dir`                            | /opt/teku/data                    | Path for data directory                 |
-| `teku_validator_data_dir`                  | /opt/teku/data                    | Path for data directory for a validator |
-| `teku_log_dir`                             | /var/log/teku                     | Path for logs directory                 |
-| `teku_log_filename`                        | {{ `teku_log_dir` }}/teku.log     | Path containing the location (relative or absolute) and the log filename  | 
-| `teku_profile_file`                        | /etc/profile.d/teku-path.sh       | Path to allow loading teku into the system PATH                           |
-| `teku_managed_service`                     | true                              | Enables a systemd service               |
-| `teku_systemd_dir`                         | /etc/systemd/system/              | default systemd directory           |
-| `teku_systemd_state`                       | restarted                         | The default option for the systemd service state |
-| `teku_output_transition_dir`               | /tmp/teku|                                         |
-| `teku_node_private_key_file`               | ""       | Path to store the private key           |
-| `teku_network`                             | minimal  | Predefined network configuration        |
-| `teku_host_ip`                             | ""       |                                         |
-| `teku_p2p_enabled`                         | True     | Enables or disables all P2P communication                                          |
-| `teku_p2p_interface`                       | 0.0.0.0  | Specifies the network interface on which the node listens for P2P communication    |
-| `teku_p2p_port`                            | 9000     | Specifies the P2P listening ports (UDP and TCP)                                    |
-| `teku_p2p_advertised_port`                 | 9000     | The advertised P2P port                 |
-| `teku_p2p_discovery_enabled`               | True     | Enables or disables P2P peer discovery  |
-| `teku_interop_genesis_time`                | 0        |                                         |
-| `teku_interop_start_state`                 | ""       |                                         |
-| `teku_interop_owned_validator_start_index` | 0        |                                         |
-| `teku_interop_owned_validator_count`       | 64       |                                         |
-| `teku_interop_number_of_validators`        | 64       |                                         |
-| `teku_interop_enabled`                     | False    |                                         |
-| `teku_deposit_mode`                        | normal   |                                         |
-| `teku_deposit_input_file`                  | ""       |                                         |
-| `teku_deposit_number_validators`           | 64       |                                         |
-| `teku_deposit_contract_address`            | 0x       | Eth1 address of deposit contract        |
-| `teku_deposit_eth1_endpoint`               | ""       | JSON-RPC URL of Eth1 node               |
-| `teku_metrics_enabled`                     | True     | Set to true to enable the metrics exporter |
-| `teku_metrics_interface`                   | 0.0.0.0  |                                         |
-| `teku_combined_metrics_port`                        | 8010     | Metric port when deployed as combined   |
-| `teku_beacon_metrics_port`                        | 8008     | Metric port when deployed as beacon single process    |
-| `teku_validator_metrics_port`              | 8009     | Validator service metric port when deployed as validator single process            |
-| `teku_metrics_categories`                  | [] (All categories enabled)                         | Categories for which to track metrics   |
-| `teku_data_path`                           | /data    | Use same folder for both validator and beacon service in single process standalone mode           |
-| `teku_data_storage_mode`                   | prune    | Set the strategy for handling historical chain data                                |
-| `teku_beacon_rest_api_port`                | 5051     |                                         |
-| `teku_beacon_rest_api_docs_enabled`        | False    |                                         |
-| `teku_validator_keys`                      | []       | Of the form "/path/to/keys:/path/to/secrets" |
-| `teku_beacon_rest_api_enabled`             | True     | Enable the REST API service             |
-| `teku_beacon_rest_api_interface`           | 127.0.0.1| Interface for the REST API service      |
-| `teku_beacon_rest_api_host_allowlist`      | ["*"]    | Host allowlist for for the REST API service                                        |
-| `teku_combined_cmdline_args`                        | []       |  Only applicable in combined or monolith mode                                       |
-| `teku_combined_cmdline_args_beacon`                 | []       | Only applicable in single process standalone mode. Allows setting beacon specific values          |
-| `teku_combined_cmdline_args_validator`              | []       | Only applicable in single process standalone mode. Allows setting validator specific values       |
-| `teku_opts`                            | []       |                                         |
-| `teku_beacon_opts`                     | []       | Only applicable in single process standalone mode. Allows setting beacon specific values          |
-| `teku_validator_opts`                  | []       | Only applicable in single process standalone mode. Allows setting validator specific values       |
+| `teku_install_dir`                         | /opt/teku                                                                                                                    | Path to install to                      |
+| `teku_config_dir`                          | /etc/teku                                                                                                                    | Path for default configuration          |
+| `teku_data_dir`                            | /opt/teku/data                                                                                                               | Path for data directory                 |
+| `teku_validator_data_dir`                  | /opt/teku/data                                                                                                               | Path for data directory for a validator |
+| `teku_log_dir`                             | /var/log/teku                                                                                                                | Path for logs directory                 |
+| `teku_log_filename`                        | {{ `teku_log_dir` }}/teku.log                                                                                                | Path containing the location (relative or absolute) and the log filename  | 
+| `teku_profile_file`                        | /etc/profile.d/teku-path.sh                                                                                                  | Path to allow loading teku into the system PATH                           |
+| `teku_managed_service`                     | true                                                                                                                         | Enables a systemd service               |
+| `teku_systemd_dir`                         | /etc/systemd/system/                                                                                                         | default systemd directory           |
+| `teku_systemd_state`                       | restarted                                                                                                                    | The default option for the systemd service state |
+| `teku_output_transition_dir`               | /tmp/teku                                                                                                                    |                                         |
+| `teku_node_private_key_file`               | ""                                                                                                                           | Path to store the private key           |
+| `teku_network`                             | minimal                                                                                                                      | Predefined network configuration        |
+| `teku_host_ip`                             | ""                                                                                                                           |                                         |
+| `teku_p2p_enabled`                         | True                                                                                                                         | Enables or disables all P2P communication                                          |
+| `teku_p2p_interface`                       | 0.0.0.0                                                                                                                      | Specifies the network interface on which the node listens for P2P communication    |
+| `teku_p2p_port`                            | 9000                                                                                                                         | Specifies the P2P listening ports (UDP and TCP)                                    |
+| `teku_p2p_advertised_port`                 | 9000                                                                                                                         | The advertised P2P port                 |
+| `teku_p2p_discovery_enabled`               | True                                                                                                                         | Enables or disables P2P peer discovery  |
+| `teku_interop_genesis_time`                | 0                                                                                                                            |                                         |
+| `teku_interop_start_state`                 | ""                                                                                                                           |                                         |
+| `teku_interop_owned_validator_start_index` | 0                                                                                                                            |                                         |
+| `teku_interop_owned_validator_count`       | 64                                                                                                                           |                                         |
+| `teku_interop_number_of_validators`        | 64                                                                                                                           |                                         |
+| `teku_interop_enabled`                     | False                                                                                                                        |                                         |
+| `teku_deposit_mode`                        | normal                                                                                                                       |                                         |
+| `teku_deposit_input_file`                  | ""                                                                                                                           |                                         |
+| `teku_deposit_number_validators`           | 64                                                                                                                           |                                         |
+| `teku_deposit_contract_address`            | 0x                                                                                                                           | Eth1 address of deposit contract        |
+| `teku_deposit_eth1_endpoint`               | ""                                                                                                                           | JSON-RPC URL of Eth1 node               |
+| `teku_metrics_enabled`                     | True                                                                                                                         | Set to true to enable the metrics exporter |
+| `teku_metrics_interface`                   | 0.0.0.0                                                                                                                      |                                         |
+| `teku_combined_metrics_port`                        | 8010                                                                                                                         | Metric port when deployed as combined   |
+| `teku_beacon_metrics_port`                        | 8008                                                                                                                         | Metric port when deployed as beacon single process    |
+| `teku_validator_metrics_port`              | 8009                                                                                                                         | Validator service metric port when deployed as validator single process            |
+| `teku_metrics_categories`                  | [] (All categories enabled)                                                                                                  | Categories for which to track metrics   |
+| `teku_data_path`                           | /data                                                                                                                        | Use same folder for both validator and beacon service in single process standalone mode           |
+| `teku_data_storage_mode`                   | prune                                                                                                                        | Set the strategy for handling historical chain data                                |
+| `teku_beacon_rest_api_port`                | 5051                                                                                                                         |                                         |
+| `teku_beacon_rest_api_docs_enabled`        | False                                                                                                                        |                                         |
+| `teku_validator_keys`                      | []                                                                                                                           | Of the form "/path/to/keys:/path/to/secrets" |
+| `teku_beacon_rest_api_enabled`             | True                                                                                                                         | Enable the REST API service             |
+| `teku_beacon_rest_api_interface`           | 127.0.0.1                                                                                                                    | Interface for the REST API service      |
+| `teku_beacon_rest_api_host_allowlist`      | ["*"]                                                                                                                        | Host allowlist for for the REST API service                                        |
+| `teku_combined_cmdline_args`                        | []                                                                                                                           |  Only applicable in combined or monolith mode                                       |
+| `teku_combined_cmdline_args_beacon`                 | []                                                                                                                           | Only applicable in single process standalone mode. Allows setting beacon specific values          |
+| `teku_combined_cmdline_args_validator`              | []                                                                                                                           | Only applicable in single process standalone mode. Allows setting validator specific values       |
+| `teku_opts`                            | []                                                                                                                           |                                         |
+| `teku_beacon_opts`                     | []                                                                                                                           | Only applicable in single process standalone mode. Allows setting beacon specific values          |
+| `teku_validator_opts`                  | []                                                                                                                           | Only applicable in single process standalone mode. Allows setting validator specific values       |
 
 List of variables which are not defined with default values in ansible role. However if these variables set via command line those will configured in teku configuration file
 

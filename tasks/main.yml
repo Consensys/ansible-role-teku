@@ -3,8 +3,8 @@
   block:
     - name: Check teku version supplied
       ansible.builtin.fail:
-        msg: You must set "teku_version" for this role to run
-      when: teku_version is not defined
+        msg: You must set "teku_version" for this role to run when not building Teku from source
+      when: teku_version is not defined and not teku_build_from_source
 
 # Retrive latest version when teku_version == 'latest'
 - name: main | Include task to retrieve latest version
@@ -22,6 +22,10 @@
 - name: main | Get IP address to bind to if not provided
   ansible.builtin.include_tasks: network.yml
   when: not teku_host_ip
+
+- name: Compile teku
+  include_tasks: "compile.yml"
+  when: teku_build_from_source
 
 - name: main | Install teku
   ansible.builtin.include_tasks: install.yml
