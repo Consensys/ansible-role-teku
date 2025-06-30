@@ -45,7 +45,7 @@
 - name: install | Extract Teku source to install directory
   ansible.builtin.unarchive:
     src: "{{ '/tmp/teku/build/distributions/teku-' + teku_version + '.tar.gz' if teku_build_from_source else teku_download_url }}"
-    remote_src: "{{ false if teku_build_from_source else true }}"
+    remote_src: yes
     dest: "{{ teku_install_dir }}"
     owner: "{{ teku_user }}"
     group: "{{ teku_group }}"
