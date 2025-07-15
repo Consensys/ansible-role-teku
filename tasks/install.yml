@@ -33,6 +33,52 @@
     dest: "/etc/logrotate.d/teku"
   become: true
 
+- name: install | Populate service facts
+  ansible.builtin.service_facts:
+
+- name: install | Set facts for running Teku services
+  ansible.builtin.set_fact:
+    teku_beacon_running: "{{ ansible_facts.services['teku-beacon.service'].status == 'enabled' if 'teku-beacon.service' in ansible_facts.services else false }}"
+    teku_validator_running: "{{ ansible_facts.services['teku-validator.service'].status == 'enabled' if 'teku-validator.service' in ansible_facts.services else false }}"
+    teku_combined_running: "{{ ansible_facts.services['teku.service'].status == 'enabled' if 'teku.service' in ansible_facts.services else false }}"
+
+- name: install | Stop running Teku services
+  ansible.builtin.systemd:
+    name: "{{ item }}"
+    state: "stopped"
+  become: true
+  loop:
+    - teku-beacon.service
+    - teku-validator.service
+    - teku.service
+  register: teku_systemd_stopped
+  when: (ansible_facts.services[item] is defined) and 
+        (ansible_facts.services[item].status == 'enabled')
+
+- name: install | Set updated optionally to trigger a systemd restart at the end - teku_beacon_state_updates
+  ansible.builtin.set_fact:
+    teku_beacon_state_updates: "{{ teku_beacon_state_updates + ['teku.running_service'] }}"
+  when: (item.item == 'teku-beacon.service') and
+        (item is defined) and
+        (item.state | default('') == "stopped")
+  loop: "{{ teku_systemd_stopped.results }}"
+
+- name: install | Set updated optionally to trigger a systemd restart at the end - teku_validator_state_updates
+  ansible.builtin.set_fact:
+    teku_validator_state_updates: "{{ teku_validator_state_updates + ['teku.running_service'] }}"
+  when: (item.item == 'teku-validator.service') and
+        (item is defined) and
+        (item.state | default('') == "stopped")
+  loop: "{{ teku_systemd_stopped.results }}"
+
+- name: install | Set updated optionally to trigger a systemd restart at the end - teku_combined_state_updates
+  ansible.builtin.set_fact:
+    teku_combined_state_updates: "{{ teku_combined_state_updates + ['teku.running_service'] }}"
+  when: (item.item == 'teku.service') and
+        (item is defined) and
+        (item.state | default('') == "stopped")
+  loop: "{{ teku_systemd_stopped.results }}"      
+
 - name: install | Download Teku binary for Teku version {{ _teku_version }}
   ansible.builtin.uri:
     url: "{{ teku_download_url }}"

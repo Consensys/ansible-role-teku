@@ -78,6 +78,10 @@
   register: start_teku_validator
   when: teku_managed_service|bool
 
+- name: validator | debug teku_validator_state_updates
+  ansible.builtin.debug:
+    var: teku_validator_state_updates
+
 - name: validator | restart Teku service
   ansible.builtin.systemd:
     name: "{{ teku_service_name }}.service"

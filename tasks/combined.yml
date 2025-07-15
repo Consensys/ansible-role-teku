@@ -67,6 +67,10 @@
   register: start_teku_combined
   when: teku_managed_service|bool
 
+- name: combined | debug teku_combined_state_updates
+  ansible.builtin.debug:
+    var: teku_combined_state_updates
+
 - name: combined | restart Teku service
   ansible.builtin.systemd:
     name: "{{ teku_service_name }}.service"
@@ -74,5 +78,5 @@
   become: true
   when:
     - not start_teku_combined.changed
-    - teku_state_updates|length > 0
+    - teku_combined_state_updates|length > 0
     - teku_managed_service|bool
