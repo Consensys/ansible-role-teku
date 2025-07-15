@@ -50,7 +50,7 @@
   loop:
     - teku-beacon.service
     - teku-validator.service
-    - teku-combined.service
+    - teku.service
   register: teku_systemd_stopped
   when: (ansible_facts.services[item] is defined) and 
         (ansible_facts.services[item].status == 'enabled')
