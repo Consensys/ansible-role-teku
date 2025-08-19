@@ -80,12 +80,15 @@
   loop: "{{ teku_systemd_stopped.results }}"      
 
 - name: install | Download Teku binary for Teku version {{ _teku_version }}
-  ansible.builtin.uri:
+  ansible.builtin.get_url:
     url: "{{ teku_download_url }}"
     dest: "{{ teku_base_dir }}"
     owner: "{{ teku_user }}"
     group: "{{ teku_group }}"
   register: teku_binary_download
+  retries: 5
+  delay: 10
+  until: teku_binary_download is succeeded  
   become: true
 
 - name: install | Extract Teku source to install directory
