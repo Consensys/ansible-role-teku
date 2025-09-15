@@ -18,6 +18,7 @@
     state: directory
     owner: "{{ teku_user }}"
     group: "{{ teku_group }}"
+    recurse: True
   loop:
     - "{{ teku_base_dir }}"
     - "{{ teku_install_dir }}"
