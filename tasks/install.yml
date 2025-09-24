@@ -18,7 +18,6 @@
     state: directory
     owner: "{{ teku_user }}"
     group: "{{ teku_group }}"
-    recurse: True
   loop:
     - "{{ teku_base_dir }}"
     - "{{ teku_install_dir }}"
@@ -27,6 +26,11 @@
     - "{{ teku_data_dir }}"
     - "{{ teku_validator_data_dir }}"
   become: true
+
+- name: install | Ownership init marker
+  ansible.builtin.stat:
+    path: "{{ teku_data_dir }}/.ownership_initialized"
+  register: ownership_marker
 
 - name: install | Setup logrotate
   ansible.builtin.template:
@@ -79,6 +83,26 @@
         (item is defined) and
         (item.state | default('') == "stopped")
   loop: "{{ teku_systemd_stopped.results }}"      
+
+- block:
+    - name: install | One-time recursive ownership of data dir
+      ansible.builtin.file:
+        path: "{{ teku_data_dir }}"
+        state: directory
+        owner: "{{ teku_user }}"
+        group: "{{ teku_group }}"
+        recurse: true
+      become: true
+
+    - name: install | Record that ownership was initialized
+      ansible.builtin.copy:
+        dest: "{{ teku_data_dir }}/.ownership_initialized"
+        content: "initialized: {{ ansible_date_time.iso8601 }}"
+        owner: "{{ teku_user }}"
+        group: "{{ teku_group }}"
+        mode: "0644"
+      become: true
+  when: not ownership_marker.stat.exists
 
 - name: install | Download Teku binary for Teku version {{ _teku_version }}
   ansible.builtin.get_url:
