@@ -103,9 +103,6 @@ Xinterop-enabled: {{teku_interop_enabled}}
 {% if teku_deposit_contract_address != "0x" %}
 eth1-deposit-contract-address: "{{teku_deposit_contract_address}}"
 {% endif %}
-{% if teku_deposit_eth1_endpoint != "" %}
-eth1-endpoint: "{{teku_deposit_eth1_endpoint}}"
-{% endif %}
 {% if teku_ee_endpoint is defined and teku_ee_endpoint != "" %}
 ee-endpoint: "{{teku_ee_endpoint}}"
 {% endif %}
