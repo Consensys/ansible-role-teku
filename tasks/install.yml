@@ -104,10 +104,20 @@
       become: true
   when: not ownership_marker.stat.exists
 
+- name: install | Set headers for GitHub download
+  set_fact:
+    _github_download_headers: >-
+      {{
+        {'Authorization': 'token ' + github_teku_token} 
+        if (github_teku_token is defined and github_teku_token | length > 0) 
+        else {}
+      }}
+
 - name: install | Download Teku binary for Teku version {{ _teku_version }} if not using teku_build_from_source
   ansible.builtin.get_url:
     url: "{{ teku_download_url }}"
     dest: "/tmp/teku-{{ teku_version }}.tar.gz"
+    headers: "{{ _github_download_headers }}"
     owner: "{{ teku_user }}"
     group: "{{ teku_group }}"
     mode: "0644"    
