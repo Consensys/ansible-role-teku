@@ -155,24 +155,20 @@
       set_fact:
         _teku_artifact_api_url: "https://api.github.com/repos/Consensys/teku/actions/artifacts/{{ teku_download_url | regex_search('artifacts/([0-9]+)', '\\1') | first }}/zip"
 
-    - name: install | Set headers for Teku artifact download
-      set_fact:
-        _github_download_headers:
-          Authorization: "Bearer {{ github_teku_token }}"
-          Accept: "application/vnd.github+json"
-
-    - name: install | Download Teku artifact zip
-      ansible.builtin.get_url:
-        url: "{{ _teku_artifact_api_url }}"
-        dest: "{{ _teku_download_base }}.zip"
-        headers: "{{ _github_download_headers }}"
-        owner: "{{ teku_user }}"
-        group: "{{ teku_group }}"
-        mode: "0644"
-      register: teku_binary_download
+    # dont use get_url or uri - getting this off azure blob storage is super painful
+    - name: install | Download Teku artifact zip (curl)
+      ansible.builtin.command: >
+        curl -L
+        -H "Authorization: Bearer {{ github_teku_token }}"
+        -H "Accept: application/vnd.github+json"
+        -H "User-Agent: ansible-teku-installer"
+        -o {{ _teku_download_base }}.zip
+        {{ _teku_artifact_api_url }}
+      register: curl_result
       retries: 5
       delay: 10
-      until: teku_binary_download is succeeded
+      until: curl_result.rc == 0
+      changed_when: true
       become: true
 
     - name: install | Create temp dir for Teku artifact extraction
