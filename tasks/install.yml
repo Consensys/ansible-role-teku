@@ -104,56 +104,128 @@
       become: true
   when: not ownership_marker.stat.exists
 
-- name: install | Set headers for GitHub download
+# Unarchive once if it’s a tarball
+# Unarchive twice if it’s an artifact ie a tar in a zip
+- name: install | Determine Teku download type
   set_fact:
-    _github_download_headers: >-
-      {{
-        {'Authorization': 'token ' + github_teku_token} 
-        if (github_teku_token is defined and github_teku_token | length > 0) 
-        else {}
-      }}
+    _teku_is_release: "{{ teku_download_url.endswith('.tar.gz') }}"
+    _teku_download_base: "/tmp/teku-{{ teku_version }}"
 
-- name: install | Download Teku binary for Teku version {{ _teku_version }} if not using teku_build_from_source
-  ansible.builtin.get_url:
-    url: "{{ teku_download_url }}"
-    dest: "/tmp/teku-{{ teku_version }}.tar.gz"
-    headers: "{{ _github_download_headers }}"
-    owner: "{{ teku_user }}"
-    group: "{{ teku_group }}"
-    mode: "0644"    
-  register: teku_binary_download
-  retries: 5
-  delay: 10
-  when: not teku_build_from_source
-  until: teku_binary_download is succeeded  
-  become: true
+# normal release
+- block:
+    - name: install | Download Teku release tarball
+      ansible.builtin.get_url:
+        url: "{{ teku_download_url }}"
+        dest: "{{ _teku_download_base }}.tar.gz"
+        owner: "{{ teku_user }}"
+        group: "{{ teku_group }}"
+        mode: "0644"
+      register: teku_binary_download
+      retries: 5
+      delay: 10
+      until: teku_binary_download is succeeded
+      become: true
 
-- name: install | Extract Teku source to install directory
-  ansible.builtin.unarchive:
-    src: >-
-      {{ '/tmp/teku-' + teku_version + '.tar.gz'
-         if not teku_build_from_source
-         else '/tmp/teku/build/distributions/teku-' + teku_version + '.tar.gz' }}
-    remote_src: yes
-    dest: "{{ teku_install_dir }}"
-    owner: "{{ teku_user }}"
-    group: "{{ teku_group }}"
-    mode: "0775"
-    extra_opts:
-      - --strip-components
-      - "1"
-  become: true
-  register: extract_src
+    - name: install | Extract Teku release to install directory
+      ansible.builtin.unarchive:
+        src: "{{ _teku_download_base }}.tar.gz"
+        remote_src: yes
+        dest: "{{ teku_install_dir }}"
+        owner: "{{ teku_user }}"
+        group: "{{ teku_group }}"
+        mode: "0775"
+        extra_opts:
+          - --strip-components=1
+      register: extract_src
+      become: true
 
-- name: install | Remove downloaded Teku archive after extraction
-  ansible.builtin.file:
-    path: "/tmp/teku-{{ teku_version }}.tar.gz"
-    state: absent
+    - name: install | Remove Teku release tarball
+      ansible.builtin.file:
+        path: "{{ _teku_download_base }}.tar.gz"
+        state: absent
+      become: true      
+
   when:
     - not teku_build_from_source
-    - extract_src is succeeded
-  become: true
+    - _teku_is_release
 
+# get from gha artifacts
+- block:
+    - name: install | Normalize Teku artifact API download URL
+      set_fact:
+        _teku_artifact_api_url: "https://api.github.com/repos/Consensys/teku/actions/artifacts/{{ teku_download_url | regex_search('artifacts/([0-9]+)', '\\1') | first }}/zip"
+
+    - name: install | Set headers for Teku artifact download
+      set_fact:
+        _github_download_headers:
+          Authorization: "Bearer {{ github_teku_token }}"
+          Accept: "application/vnd.github+json"
+
+    - name: install | Download Teku artifact zip
+      ansible.builtin.get_url:
+        url: "{{ _teku_artifact_api_url }}"
+        dest: "{{ _teku_download_base }}.zip"
+        headers: "{{ _github_download_headers }}"
+        owner: "{{ teku_user }}"
+        group: "{{ teku_group }}"
+        mode: "0644"
+      register: teku_binary_download
+      retries: 5
+      delay: 10
+      until: teku_binary_download is succeeded
+      become: true
+
+    - name: install | Create temp dir for Teku artifact extraction
+      ansible.builtin.file:
+        path: "{{ _teku_download_base }}-artifact"
+        state: directory
+        mode: "0755"
+      become: true
+
+    - name: install | Extract Teku artifact zip
+      ansible.builtin.unarchive:
+        src: "{{ _teku_download_base }}.zip"
+        remote_src: yes
+        dest: "{{ _teku_download_base }}-artifact"
+      become: true
+
+    - name: install | Find Teku tarball inside artifact
+      ansible.builtin.find:
+        paths: "{{ _teku_download_base }}-artifact"
+        patterns: "*.tar.gz"
+        recurse: yes
+      register: _teku_artifact_tar
+
+    - name: install | Extract Teku tarball from artifact
+      ansible.builtin.unarchive:
+        src: "{{ _teku_artifact_tar.files[0].path }}"
+        remote_src: yes
+        dest: "{{ teku_install_dir }}"
+        owner: "{{ teku_user }}"
+        group: "{{ teku_group }}"
+        mode: "0775"
+        extra_opts:
+          - --strip-components=1
+      register: extract_src
+      become: true
+
+    - name: install | Remove Teku artifact zip
+      ansible.builtin.file:
+        path: "{{ _teku_download_base }}.zip"
+        state: absent
+      become: true
+
+    - name: install | Cleanup Teku artifact temp dir
+      ansible.builtin.file:
+        path: "{{ _teku_download_base }}-artifact"
+        state: absent
+      become: true
+
+  when:
+    - not teku_build_from_source
+    - not _teku_is_release
+
+## Now that we have the installation done from all these various places
 - name: install | Create a symlink to current
   ansible.builtin.file:
     src: "{{ teku_install_dir }}/"
