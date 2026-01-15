@@ -1,4 +1,4 @@
-- name: tags | Set the version on a local file so it can be used by other automation
+- name: tags | Set the version on a local file so it can be used by other automation # noqa E602
   ansible.builtin.copy:
     content: "{{ _teku_version }}"
     dest: "{{ teku_version_info_file }}"
@@ -6,9 +6,10 @@
     group: "{{ teku_group }}"
     mode: 0644
   become: true
-  when: teku_ee_endpoint is defined and teku_ee_endpoint != ""
-  when: (teku_beacon_enabled) or
-        (teku_combined_enabled and (teku_ee_endpoint is defined and teku_ee_endpoint != ""))
+  when: >
+    teku_beacon_enabled or
+    (teku_combined_enabled and
+    (teku_ee_endpoint | default('') | length > 0))
 
 - name: tags | Set the teku validator version on a local file so it can be used by other automation
   ansible.builtin.copy:

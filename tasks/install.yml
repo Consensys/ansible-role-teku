@@ -57,7 +57,7 @@
     - teku-validator.service
     - teku.service
   register: teku_systemd_stopped
-  when: (ansible_facts.services[item] is defined) and 
+  when: (ansible_facts.services[item] is defined) and
         (ansible_facts.services[item].status == 'enabled')
 
 - name: install | Set updated optionally to trigger a systemd restart at the end - teku_beacon_state_updates
@@ -82,7 +82,7 @@
   when: (item.item == 'teku.service') and
         (item is defined) and
         (item.state | default('') == "stopped")
-  loop: "{{ teku_systemd_stopped.results }}"      
+  loop: "{{ teku_systemd_stopped.results }}"
 
 - block:
     - name: install | One-time recursive ownership of data dir
@@ -108,10 +108,9 @@
 # Unarchive twice if it’s an artifact ie a tar in a zip
 - name: install | Determine Teku download type
   set_fact:
-    _teku_is_release: "{{ teku_download_url.endswith('.tar.gz') }}"
-    _teku_download_base: "/tmp/teku-{{ teku_version }}"
+    _teku_download_base: "/tmp/teku-{{ _teku_version }}"
 
-# normal release
+# case 1 - normal case - release
 - block:
     - name: install | Download Teku release tarball
       ansible.builtin.get_url:
@@ -143,13 +142,13 @@
       ansible.builtin.file:
         path: "{{ _teku_download_base }}.tar.gz"
         state: absent
-      become: true      
+      become: true
 
   when:
     - not teku_build_from_source
-    - _teku_is_release
+    - teku_download_url.endswith('.tar.gz')
 
-# get from gha artifacts
+# case 2 - get from gha artifacts
 - block:
     - name: install | Normalize Teku artifact API download URL
       set_fact:
@@ -219,7 +218,31 @@
 
   when:
     - not teku_build_from_source
-    - not _teku_is_release
+    - not teku_download_url.endswith('.tar.gz')
+
+
+# case 3 - install from the local build
+- block:
+    - name: install | Extract Teku (built from source)
+      ansible.builtin.unarchive:
+        src: "{{ _teku_source_tarball }}"
+        remote_src: true
+        dest: "{{ teku_install_dir }}"
+        owner: "{{ teku_user }}"
+        group: "{{ teku_group }}"
+        mode: "0775"
+        extra_opts:
+          - --strip-components=1
+      register: extract_src
+      become: true
+
+    - name: install | Cleanup Teku source tarball
+      ansible.builtin.file:
+        path: "{{ _teku_source_tarball }}"
+        state: absent
+      become: true
+
+  when: teku_build_from_source
 
 ## Now that we have the installation done from all these various places
 - name: install | Create a symlink to current
