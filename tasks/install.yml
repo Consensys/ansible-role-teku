@@ -1,7 +1,51 @@
 ---
+- name: Lookup teku user
+  getent:
+    database: passwd
+    key: "{{ teku_user }}"
+  register: teku_user_entry
+  failed_when: false
+
+- name: Extract current UID (only if user exists)
+  set_fact:
+    teku_current_uid: "{{ teku_user_entry.ansible_facts.getent_passwd[teku_user][1] | int }}"
+  when: not teku_user_entry.failed
+
+- name: Determine if UID update is needed
+  set_fact:
+    teku_uid_needs_update: "{{ teku_current_uid != teku_uid }}"
+  when: not teku_user_entry.failed
+
+- name: Stop enabled teku services if UID needs update
+  service:
+    name: "{{ item.name }}"
+    state: stopped
+  loop:
+    - name: teku-beacon
+      enabled: "{{ teku_beacon_enabled }}"
+    - name: teku-validator
+      enabled: "{{ teku_validator_enabled }}"
+    - name: teku
+      enabled: "{{ teku_combined_enabled }}"
+  when:
+    - item.enabled
+    - not teku_user_entry.failed
+    - teku_uid_needs_update
+  become: true
+
+- name: Set updated optionally to trigger a systemd restart at the end
+  set_fact:
+    teku_combined_state_updates: "{{ teku_combined_state_updates + (['teku.uid'] if teku_combined_enabled else []) }}"
+    teku_state_updates_beacon: "{{ teku_state_updates_beacon + (['teku.uid'] if teku_beacon_enabled else []) }}"
+    teku_state_updates_validator: "{{ teku_state_updates_validator + (['teku.uid'] if teku_validator_enabled else []) }}"
+  when:
+    - not teku_user_entry.failed
+    - teku_uid_needs_update
+
 - name: install | Ensure Teku group exists
   ansible.builtin.group:
     name: "{{ teku_group }}"
+    gid: "{{ teku_gid }}"    
     state: present
   become: true
 
@@ -9,6 +53,7 @@
   ansible.builtin.user:
     comment: Teku client user
     name: "{{ teku_user }}"
+    uid: "{{ teku_uid }}"    
     group: "{{ teku_group }}"
   become: true
 
