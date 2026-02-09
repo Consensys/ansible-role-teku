@@ -198,6 +198,10 @@
     - teku_download_url.endswith('.tar.gz')
 
 # case 2 - get from gha artifacts
+# WARNING - what you want to use here is something in this format `https://github.com/Consensys/teku/actions/runs/21675139846/artifacts/5425252727`
+#           You get this from GHA and use only the `distribution-tar`; not the zip.
+#           It seems counter intuitive I know, but GHA wraps all artifacts in a zip so we effectively do
+#           download zip -> unzip it -> untar teku -> move it to the right place -> proceed
 - block:
     - name: install | Normalize Teku artifact API download URL
       set_fact:
