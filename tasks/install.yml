@@ -208,6 +208,10 @@
       set_fact:
         _teku_artifact_api_url: "https://api.github.com/repos/Consensys/teku/actions/artifacts/{{ teku_download_url | regex_search('artifacts/([0-9]+)', '\\1') | first }}/zip"
 
+    - name: install | Debug the Teku artifact URL
+      debug:
+        msg: "Teku artifact API URL: {{ _teku_artifact_api_url }}"
+
     # dont use get_url or uri - getting this off azure blob storage is super painful
     - name: install | Download Teku artifact zip (curl)
       ansible.builtin.command: >
@@ -224,12 +228,40 @@
       changed_when: true
       become: true
 
+    - name: install | Debug Show curl result
+      debug:
+        msg: "Curl result: {{ curl_result }}"
+
+    - name: install | Debug Show curl response code
+      debug:
+        msg: "Curl response code: {{ curl_result.rc }}"        
+
+    - name: install | Debug Check if file is downloaded
+      stat:
+        path: "{{ _teku_download_base }}.zip"
+      register: file_stat
+
+    - name: install | Debug File size and details
+      debug:
+        msg: "File size: {{ file_stat.stat.size }} bytes, Exists: {{ file_stat.stat.exists }}"
+
     - name: install | Create temp dir for Teku artifact extraction
       ansible.builtin.file:
         path: "{{ _teku_download_base }}-artifact"
         state: directory
         mode: "0755"
       become: true
+
+    - name: install | Debug List contents of the zip file (before extraction)
+      command: unzip -l {{ _teku_download_base }}.zip
+      register: unzip_list
+      failed_when: false
+      changed_when: false
+      become: true
+
+    - name: install | Debug Show unzip listing result
+      debug:
+        msg: "Unzip listing result: {{ unzip_list.stdout }}"
 
     - name: install | Extract Teku artifact zip
       ansible.builtin.unarchive:
@@ -244,6 +276,10 @@
         patterns: "*.tar.gz"
         recurse: yes
       register: _teku_artifact_tar
+
+    - name: install | Debug Show found tarball path
+      debug:
+        msg: "Found tarball: {{ _teku_artifact_tar.files }}"      
 
     - name: install | Extract Teku tarball from artifact
       ansible.builtin.unarchive:
