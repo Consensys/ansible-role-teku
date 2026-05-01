@@ -147,7 +147,7 @@
     - name: install | Record that ownership was initialized
       ansible.builtin.copy:
         dest: "{{ teku_data_dir }}/.ownership_initialized"
-        content: "initialized: {{ ansible_date_time.iso8601 }}"
+        content: "initialized: {{ ansible_facts['date_time'].iso8601 }}"
         owner: "{{ teku_user }}"
         group: "{{ teku_group }}"
         mode: "0644"
@@ -195,7 +195,7 @@
       become: true
 
   when:
-    - not teku_build_from_source
+    - not ( teku_build_from_source | bool )
     - teku_download_url.endswith('.tar.gz')
 
 # case 2 - get from gha artifacts
@@ -307,7 +307,7 @@
       become: true
 
   when:
-    - not teku_build_from_source
+    - not (teku_build_from_source | bool)
     - not teku_download_url.endswith('.tar.gz')
 
 
@@ -332,7 +332,7 @@
         state: absent
       become: true
 
-  when: teku_build_from_source
+  when: teku_build_from_source | bool
 
 ## Now that we have the installation done from all these various places
 - name: install | Create a symlink to current
