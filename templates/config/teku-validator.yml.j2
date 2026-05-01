@@ -23,8 +23,8 @@ log-include-validator-duties-enabled: {{teku_log_validator_duties}}
 ######################
 # metrics
 ######################
-{% if teku_metrics_enabled|bool == True %}
-metrics-enabled: True
+{% if teku_metrics_enabled | bool %}
+metrics-enabled: true
 metrics-port: {{teku_validator_metrics_port}}
 metrics-interface : "{{teku_metrics_interface}}"
 {% if teku_metrics_categories != [] %}
@@ -87,6 +87,6 @@ validators-graffiti: "{{teku_validators_graffiti}}"
 validators-keystore-locking-enabled: {{teku_validators_keystore_locking_enabled}}
 {% endif %}
 
-{% if teku_validators_performance_tracking_enabled is defined and teku_validators_performance_tracking_enabled == True %}
+{% if teku_validators_performance_tracking_enabled is defined and teku_validators_performance_tracking_enabled | bool %}
 validators-performance-tracking-mode: "ALL"
 {% endif %}

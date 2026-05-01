@@ -42,8 +42,8 @@ log-include-validator-duties-enabled: {{teku_log_validator_duties}}
 ######################
 # metrics
 ######################
-{% if teku_metrics_enabled|bool == True %}
-metrics-enabled: True
+{% if teku_metrics_enabled | bool %}
+metrics-enabled: true
 metrics-port: {{teku_beacon_metrics_port}}
 metrics-interface : "{{teku_metrics_interface}}"
 {% if teku_metrics_categories != [] %}
@@ -135,6 +135,6 @@ rest-api-enabled: {{teku_beacon_rest_api_enabled}}
 rest-api-interface: "{{teku_beacon_rest_api_interface}}"
 rest-api-host-allowlist: [{{teku_beacon_rest_api_host_allowlist|map('to_json')|join(',')}}]
 
-{% if teku_beacon_liveness_tracking %}
+{% if teku_beacon_liveness_tracking | bool %}
 beacon-liveness-tracking-enabled: {{teku_beacon_liveness_tracking|bool}}
 {% endif %}

@@ -1,27 +1,27 @@
 ---
 - name: Lookup teku user
-  getent:
+  ansible.builtin.getent:
     database: passwd
     key: "{{ teku_user }}"
   register: teku_user_entry
   failed_when: false
 
 - name: install | Determine if teku user exists
-  set_fact:
+  ansible.builtin.set_fact:
     teku_user_exists: "{{ teku_user in (teku_user_entry.ansible_facts.getent_passwd | default({})) }}"
 
 - block:
 
   - name: Extract current UID (only if user exists)
-    set_fact:
+    ansible.builtin.set_fact:
       teku_current_uid: "{{ teku_user_entry.ansible_facts.getent_passwd[teku_user][1] | int }}"
 
   - name: Determine if UID update is needed
-    set_fact:
+    ansible.builtin.set_fact:
       teku_uid_needs_update: "{{ teku_current_uid != teku_uid }}"
 
   - name: Stop enabled teku services if UID needs update
-    service:
+    ansible.builtin.systemd:
       name: "{{ item.name }}"
       state: stopped
     loop:
@@ -32,17 +32,17 @@
       - name: teku
         enabled: "{{ teku_combined_enabled }}"
     when:
-      - item.enabled
-      - teku_uid_needs_update
+      - item.enabled | bool
+      - teku_uid_needs_update | bool
     become: true
 
   - name: Set updated optionally to trigger a systemd restart at the end
-    set_fact:
-      teku_combined_state_updates: "{{ teku_combined_state_updates + (['teku.uid'] if teku_combined_enabled else []) }}"
-      teku_beacon_state_updates: "{{ teku_beacon_state_updates + (['teku.uid'] if teku_beacon_enabled else []) }}"
-      teku_validator_state_updates: "{{ teku_validator_state_updates + (['teku.uid'] if teku_validator_enabled else []) }}"
+    ansible.builtin.set_fact:
+      teku_combined_state_updates: "{{ teku_combined_state_updates + (['teku.uid'] if teku_combined_enabled | bool else []) }}"
+      teku_beacon_state_updates: "{{ teku_beacon_state_updates + (['teku.uid'] if teku_beacon_enabled | bool else []) }}"
+      teku_validator_state_updates: "{{ teku_validator_state_updates + (['teku.uid'] if teku_validator_enabled | bool else []) }}"
     when:
-      - teku_uid_needs_update
+      - teku_uid_needs_update | bool
 
   when: teku_user_exists
 
@@ -147,7 +147,7 @@
     - name: install | Record that ownership was initialized
       ansible.builtin.copy:
         dest: "{{ teku_data_dir }}/.ownership_initialized"
-        content: "initialized: {{ ansible_facts['date_time'].iso8601 }}"
+        content: "initialized: {{ now(utc=true, fmt='%Y-%m-%dT%H:%M:%SZ') }}"
         owner: "{{ teku_user }}"
         group: "{{ teku_group }}"
         mode: "0644"
@@ -157,7 +157,7 @@
 # Unarchive once if it’s a tarball
 # Unarchive twice if it’s an artifact ie a tar in a zip
 - name: install | Determine Teku download type
-  set_fact:
+  ansible.builtin.set_fact:
     _teku_download_base: "/tmp/teku-{{ _teku_version }}"
 
 # case 1 - normal case - release
@@ -178,7 +178,7 @@
     - name: install | Extract Teku release to install directory
       ansible.builtin.unarchive:
         src: "{{ _teku_download_base }}.tar.gz"
-        remote_src: yes
+        remote_src: true
         dest: "{{ teku_install_dir }}"
         owner: "{{ teku_user }}"
         group: "{{ teku_group }}"
@@ -205,11 +205,11 @@
 #           download zip -> unzip it -> untar teku -> move it to the right place -> proceed
 - block:
     - name: install | Normalize Teku artifact API download URL
-      set_fact:
+      ansible.builtin.set_fact:
         _teku_artifact_api_url: "https://api.github.com/repos/Consensys/teku/actions/artifacts/{{ teku_download_url | regex_search('artifacts/([0-9]+)', '\\1') | first }}/zip"
 
     - name: install | Debug the Teku artifact URL
-      debug:
+      ansible.builtin.debug:
         msg: "Teku artifact API URL: {{ _teku_artifact_api_url }}"
 
     # dont use get_url or uri - getting this off azure blob storage is super painful
@@ -229,20 +229,20 @@
       become: true
 
     - name: install | Debug Show curl result
-      debug:
+      ansible.builtin.debug:
         msg: "Curl result: {{ curl_result }}"
 
     - name: install | Debug Show curl response code
-      debug:
-        msg: "Curl response code: {{ curl_result.rc }}"        
+      ansible.builtin.debug:
+        msg: "Curl response code: {{ curl_result.rc }}"
 
     - name: install | Debug Check if file is downloaded
-      stat:
+      ansible.builtin.stat:
         path: "{{ _teku_download_base }}.zip"
       register: file_stat
 
     - name: install | Debug File size and details
-      debug:
+      ansible.builtin.debug:
         msg: "File size: {{ file_stat.stat.size }} bytes, Exists: {{ file_stat.stat.exists }}"
 
     - name: install | Create temp dir for Teku artifact extraction
@@ -253,20 +253,20 @@
       become: true
 
     - name: install | Debug List contents of the zip file (before extraction)
-      command: unzip -l {{ _teku_download_base }}.zip
+      ansible.builtin.command: unzip -l {{ _teku_download_base }}.zip
       register: unzip_list
       failed_when: false
       changed_when: false
       become: true
 
     - name: install | Debug Show unzip listing result
-      debug:
+      ansible.builtin.debug:
         msg: "Unzip listing result: {{ unzip_list.stdout }}"
 
     - name: install | Extract Teku artifact zip
       ansible.builtin.unarchive:
         src: "{{ _teku_download_base }}.zip"
-        remote_src: yes
+        remote_src: true
         dest: "{{ _teku_download_base }}-artifact"
       become: true
 
@@ -274,17 +274,17 @@
       ansible.builtin.find:
         paths: "{{ _teku_download_base }}-artifact"
         patterns: "*.tar.gz"
-        recurse: yes
+        recurse: true
       register: _teku_artifact_tar
 
     - name: install | Debug Show found tarball path
-      debug:
+      ansible.builtin.debug:
         msg: "Found tarball: {{ _teku_artifact_tar.files }}"      
 
     - name: install | Extract Teku tarball from artifact
       ansible.builtin.unarchive:
         src: "{{ _teku_artifact_tar.files[0].path }}"
-        remote_src: yes
+        remote_src: true
         dest: "{{ teku_install_dir }}"
         owner: "{{ teku_user }}"
         group: "{{ teku_group }}"
