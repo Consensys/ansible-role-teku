@@ -67,12 +67,26 @@
     state: directory
     owner: "{{ teku_user }}"
     group: "{{ teku_group }}"
-    recurse: true    
+    recurse: true
   loop:
     - "{{ teku_base_dir }}"
     - "{{ teku_install_dir }}"
     - "{{ teku_config_dir }}"
     - "{{ teku_log_dir }}"
+  become: true
+
+# Data dirs are owned by a running Teku process: a recursive walk here
+# races RocksDB compaction (*.ldb) and slashprotection atomic writes (*.tmp)
+# and fails with ENOENT. Top-level ensure only; the gated one-time block
+# below handles recursive ownership after services are stopped.
+- name: install | Ensure data directories exist
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ teku_user }}"
+    group: "{{ teku_group }}"
+    recurse: false
+  loop:
     - "{{ teku_data_dir }}"
     - "{{ teku_validator_data_dir }}"
   become: true
